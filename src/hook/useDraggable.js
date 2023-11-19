@@ -1,10 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-const useDraggable = (
-  props
-) => {
+const useDraggable = (props) => {
   const boxRef = useRef(null);
-
   const [positionPre, setPositionPre] = useState(props);
   const position = useRef(props);
   position.current = props;
@@ -18,7 +15,6 @@ const useDraggable = (
 
   useEffect(() => {
     if (!boxRef.current) return;
-
     const box = boxRef.current;
 
     const onMouseDown = (e) => {
@@ -38,12 +34,10 @@ const useDraggable = (
 
       const nextX = e.clientX - coords.current.startX + coords.current.lastX;
       const nextY = e.clientY - coords.current.startY + coords.current.lastY;
+
       position.current = { x: nextX, y: nextY };
       setPositionPre({ x: nextX, y: nextY });
-      localStorage.setItem(
-        'boxPosition',
-        JSON.stringify({ x: nextX, y: nextY })
-      );
+
       box.style.top = `${nextY}px`;
       box.style.left = `${nextX}px`;
     };

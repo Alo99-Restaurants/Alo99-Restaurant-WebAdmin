@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import useDraggable from '@/hook/useDraggable';
 
 function TableItem(props) {
@@ -14,21 +14,26 @@ function TableItem(props) {
     position || { x: 0, y: 0 }
   );
 
-  const initialStyle = (positionBox) => ({
-    top: `${positionBox.y}px`,
-    left: `${positionBox.x}px`
-  });
+  const memoizedInitialStyle = useMemo(() => {
+    return {
+      top: `${positionBox.y}px`,
+      left: `${positionBox.x}px`
+    };
+  }, [positionBox]);
 
-  const classNameTableItem = (type) => {
-    if (type === 'box2') {
-      return 'absolute top-0 left-0 bg-orange-500 h-[60px] w-[60px] cursor-pointer';
-    } else if (type === 'box3') {
-      return 'absolute top-0 left-0 bg-green-500 h-[60px] w-[60px] cursor-pointer';
-    } else if (type === 'box4') {
-      return 'absolute top-0 left-0 bg-blue-500 h-[60px] w-[60px] cursor-pointer';
+  const memoizedClassName = useMemo(() => {
+    function classNameTableItem(type) {
+      if (type === 'box2') {
+        return 'absolute top-0 left-0 bg-orange-500 h-[60px] w-[60px] cursor-pointer';
+      } else if (type === 'box3') {
+        return 'absolute top-0 left-0 bg-green-500 h-[60px] w-[60px] cursor-pointer';
+      } else if (type === 'box4') {
+        return 'absolute top-0 left-0 bg-blue-500 h-[60px] w-[60px] cursor-pointer';
+      }
+      return '';
     }
-    return '';
-  };
+    return classNameTableItem(type);
+  }, [type]);
 
   useEffect(() => {
     handelChangePosition(id, positionRef);
@@ -38,9 +43,9 @@ function TableItem(props) {
     <div
       id={id}
       ref={boxRef}
-      className={classNameTableItem(type)}
+      className={memoizedClassName}
       onClick={() => setActive(!active)}
-      style={initialStyle(positionBox)}>
+      style={memoizedInitialStyle}>
       {isDelete && (
         <div
           onClick={() => {
