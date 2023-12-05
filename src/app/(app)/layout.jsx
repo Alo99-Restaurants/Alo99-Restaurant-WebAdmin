@@ -1,18 +1,15 @@
-/* eslint-disable no-magic-numbers */
 'use client';
 
-import React, { useState } from 'react';
-import { Layout, Menu, theme } from 'antd';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import { useRouter } from 'next/navigation';
 import {
-  HomeOutlined,
-  UserOutlined,
   FileOutlined,
-  WalletOutlined,
-  SettingOutlined
+  HomeOutlined,
+  SettingOutlined,
+  UserOutlined
 } from '@ant-design/icons';
+import { Avatar, Layout, Menu, Select, theme } from 'antd';
+import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
 import Alo99Logo from '../../assets/alo99-logo.png';
 
 const { Header, Content, Footer } = Layout;
@@ -32,29 +29,11 @@ const AdminLayout = ({ children }) => {
       )
     },
     {
-      key: 'manage-users',
-      label: (
-        <div>
-          <UserOutlined />
-          <span>Manage Users</span>
-        </div>
-      )
-    },
-    {
-      key: 'content-management',
+      key: 'order-management',
       label: (
         <div>
           <FileOutlined />
-          <span>Content Management</span>
-        </div>
-      )
-    },
-    {
-      key: 'payment',
-      label: (
-        <div>
-          <WalletOutlined />
-          <span>Payment</span>
+          <span>Order Management</span>
         </div>
       )
     },
@@ -63,7 +42,7 @@ const AdminLayout = ({ children }) => {
       label: (
         <div>
           <SettingOutlined />
-          <span>Setting</span>
+          <span>Settings</span>
         </div>
       )
     }
@@ -83,13 +62,13 @@ const AdminLayout = ({ children }) => {
   };
 
   return (
-    <Layout className='layout'>
-      <Header className='flex items-center bg-white'>
+    <Layout className='layout bg-blue-50 backdrop-blur-md'>
+      <Header className='flex items-center bg-white shadow'>
         <div className='w-[100px]'>
           <Image src={Alo99Logo} alt='Alo99 Logo' width={60} priority />
         </div>
         <Menu
-          className='min-w-[calc(100vw-200px)]'
+          className='min-w-[calc(100vw-450px)]'
           theme='light'
           mode='horizontal'
           defaultSelectedKeys={['dashboard']}
@@ -97,17 +76,33 @@ const AdminLayout = ({ children }) => {
           onClick={handleMenuItemClick}
           items={menuItems}
         />
+        <div className='w-[200px]'>
+          <Select
+            defaultValue={1}
+            style={{ width: 200 }}
+            options={[
+              { value: 1, label: 'Alo99 Chi nhánh 1' },
+              { value: 3, label: 'Alo99 Chi nhánh 2' },
+              { value: 4, label: 'Alo99 Chi nhánh 3', disabled: true }
+            ]}
+          />
+        </div>
+        <div className='pl-4'>
+          <Avatar size={40} icon={<UserOutlined />} />
+        </div>
       </Header>
 
-      <Content className='px-[20px]'>
+      <Content className='px-[20px] my-2'>
         <div
-          className='site-layout-content rounded-xl mt-[20px] h-[calc(100vh-(69px+64px+20px))] p-5'
+          className='site-layout-content rounded-xl mt-3 h-[calc(100vh-(69px+64px+12px+16px))] p-5  shadow'
           style={{ background: colorBgContainer }}>
           {children}
         </div>
       </Content>
 
-      <Footer className='text-center'>Alo99 ©2023 Created by KP</Footer>
+      <Footer className='text-center bg-blue-50'>
+        Alo99 ©2023 Created by KP
+      </Footer>
     </Layout>
   );
 };

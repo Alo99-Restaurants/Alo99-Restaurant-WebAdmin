@@ -18,12 +18,15 @@ const useDraggable = (props) => {
     const box = boxRef.current;
 
     const onMouseDown = (e) => {
+      console.log('onMouseDown');
       isClicked.current = true;
       coords.current.startX = e.clientX - props.x;
       coords.current.startY = e.clientY - props.y;
     };
 
     const onMouseUp = () => {
+      console.log('onMouseUp');
+
       isClicked.current = false;
       coords.current.lastX = box.offsetLeft - props.x;
       coords.current.lastY = box.offsetTop - props.y;

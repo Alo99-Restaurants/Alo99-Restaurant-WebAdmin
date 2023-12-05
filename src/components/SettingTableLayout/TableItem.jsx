@@ -4,12 +4,14 @@ import useDraggable from '@/hook/useDraggable';
 
 function TableItem(props) {
   const [active, setActive] = useState(false);
+
   const {
     item: { id, type, position },
     handelChangePosition,
     handelRemoveItem,
     isDelete
   } = props;
+
   const [boxRef, positionBox, positionRef] = useDraggable(
     position || { x: 0, y: 0 }
   );
@@ -24,11 +26,11 @@ function TableItem(props) {
   const memoizedClassName = useMemo(() => {
     function classNameTableItem(type) {
       if (type === 'box2') {
-        return 'absolute top-0 left-0 bg-orange-500 h-[60px] w-[60px] cursor-pointer';
+        return 'absolute bg-orange-500 h-[60px] w-[60px] cursor-pointer select-none';
       } else if (type === 'box3') {
-        return 'absolute top-0 left-0 bg-green-500 h-[60px] w-[60px] cursor-pointer';
+        return 'absolute bg-green-500 h-[60px] w-[60px] cursor-pointer select-none';
       } else if (type === 'box4') {
-        return 'absolute top-0 left-0 bg-blue-500 h-[60px] w-[60px] cursor-pointer';
+        return 'absolute bg-blue-500 h-[60px] w-[60px] cursor-pointer select-none';
       }
       return '';
     }
@@ -55,7 +57,7 @@ function TableItem(props) {
           X
         </div>
       )}
-      <div>{id}</div>
+      <div>{type}</div>
     </div>
   );
 }
