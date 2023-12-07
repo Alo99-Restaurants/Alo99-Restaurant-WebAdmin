@@ -66,28 +66,29 @@ const items = [
 ];
 
 function Settings() {
-  const [current, setCurrent] = useState('option1');
-  const onClick = (e) => {
-    console.log('click ', e);
-    setCurrent(e.key);
-  };
+  // const [current, setCurrent] = useState('option1');
+  // const onClick = (e) => {
+  //   console.log('click ', e);
+  //   setCurrent(e.key);
+  // };
   return (
-    <div className='h-full w-full flex-[1]'>
-      <div className='layout-settings h-full flex flex-row'>
-        <div className='h-full flex-[1]'>
-          <Menu
-            className='h-full'
-            onClick={onClick}
-            selectedKeys={[current]}
-            mode='vertical'
-            items={items}
-          />
-        </div>
-        <div className='flex-[6] flex justify-center items-center'>
-          <SettingTableLayout />
-        </div>
-      </div>
-    </div>
+    <div>index setting</div>
+    // <div className='h-full w-full flex-[1]'>
+    //   <div className='layout-settings h-full flex flex-row'>
+    //     <div className='h-full flex-[1]'>
+    //       <Menu
+    //         className='h-full'
+    //         onClick={onClick}
+    //         selectedKeys={[current]}
+    //         mode='vertical'
+    //         items={items}
+    //       />
+    //     </div>
+    //     <div className='flex-[6] flex justify-center items-center'>
+    //       <SettingTableLayout />
+    //     </div>
+    //   </div>
+    // </div>
   );
 }
 
