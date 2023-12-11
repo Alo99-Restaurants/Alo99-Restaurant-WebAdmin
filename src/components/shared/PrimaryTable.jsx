@@ -1,6 +1,6 @@
+'use client';
 import React, { useState } from 'react';
 import { Table } from 'antd';
-import tw from '@/common/utils/classUtil';
 
 const PrimaryTable = (props) => {
   const {
@@ -66,8 +66,8 @@ const PrimaryTable = (props) => {
 
   return (
     <Table
-      className={tw(tableClassName)}
-      rowClassName={tw(rowClassName)}
+      className={tableClassName}
+      rowClassName={rowClassName}
       columns={columns}
       dataSource={dataSource}
       rowSelection={!!dataSource && !!columns && rowSelection}

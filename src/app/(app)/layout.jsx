@@ -52,13 +52,13 @@ const AdminLayout = ({ children }) => {
   const router = useRouter();
 
   const [selectedKey, setSelectedKey] = useState(() => {
-    const item = menuItems.find((item) => pathname.endsWith(item.key));
+    const item = menuItems.find((item) => pathname.startsWith('/' + item.key));
     return item?.key || 'dashboard';
   });
 
   const handleMenuItemClick = ({ key }) => {
     setSelectedKey(key);
-    router.push(key, { scroll: false });
+    router.push('/' + key, { scroll: false });
   };
 
   return (
