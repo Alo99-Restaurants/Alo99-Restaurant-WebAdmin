@@ -26,11 +26,11 @@ function TableItem(props) {
   const memoizedClassName = useMemo(() => {
     function classNameTableItem(type) {
       if (type === 'box2') {
-        return 'absolute bg-orange-500 h-[60px] w-[60px] cursor-pointer select-none';
+        return 'absolute bg-orange-500 h-[100px] w-[100px] cursor-pointer select-none';
       } else if (type === 'box3') {
-        return 'absolute bg-green-500 h-[60px] w-[60px] cursor-pointer select-none';
+        return 'absolute bg-green-500 h-[100px] w-[100px] cursor-pointer select-none';
       } else if (type === 'box4') {
-        return 'absolute bg-blue-500 h-[60px] w-[60px] cursor-pointer select-none';
+        return 'absolute bg-blue-500 h-[100px] w-[100px] cursor-pointer select-none';
       }
       return '';
     }

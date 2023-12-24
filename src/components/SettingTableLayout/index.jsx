@@ -23,16 +23,22 @@ export default function SettingTableLayout() {
       loadFromLocalStorage('listBox') || [
         {
           id: '4374182c-aaf7-4476-bec7-7a0d40d80422',
+          width: 100,
+          height: 100,
           type: 'box2',
           position: { x: 100, y: 200 }
         },
         {
           id: '482565bf-435f-450a-bcc6-0c4421034598',
+          width: 100,
+          height: 100,
           type: 'box4',
           position: { x: 200, y: 300 }
         },
         {
           id: '820ce129-fb0b-4551-91b8-713d754426a6',
+          width: 100,
+          height: 100,
           type: 'box3',
           position: { x: 300, y: 100 }
         }
@@ -89,7 +95,13 @@ export default function SettingTableLayout() {
               onClick={() =>
                 setListBox([
                   ...listBox,
-                  { id: uuidv4(), type: typeBox, position: { x: 0, y: 0 } }
+                  {
+                    id: uuidv4(),
+                    width: 100,
+                    height: 100,
+                    type: typeBox,
+                    position: { x: 0, y: 0 }
+                  }
                 ])
               }>
               Add table
