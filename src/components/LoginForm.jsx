@@ -1,13 +1,16 @@
 'use client';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Form, Input, Button, Checkbox } from 'antd';
 import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Alo99Logo from '../assets/alo99-logo.png';
+import { useAuth } from '@/context/AuthContext';
 
 const LoginForm = () => {
+  const { login } = useAuth();
+
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+    login({ userName: values.userName, password: values.password });
   };
 
   return (
@@ -20,11 +23,13 @@ const LoginForm = () => {
           name='normal_login'
           className='login-form'
           initialValues={{
-            remember: true
+            remember: true,
+            userName: 'admin',
+            password: 'admin'
           }}
           onFinish={onFinish}>
           <Form.Item
-            name='username'
+            name='userName'
             rules={[
               {
                 required: true,

@@ -1,7 +1,21 @@
+'use client';
 import LoginForm from '@/components/LoginForm';
-import React from 'react';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 function LoginPage() {
+  const router = useRouter();
+  const { userData } = useAuth();
+
+  useEffect(() => {
+    if (userData.userInfo && userData.token) {
+      router.replace('/');
+    }
+  }, [userData]);
+
+  if (userData.userInfo) return <></>;
+
   return <LoginForm />;
 }
 

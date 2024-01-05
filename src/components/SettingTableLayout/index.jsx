@@ -7,43 +7,40 @@ import { v4 as uuidv4 } from 'uuid';
 export default function SettingTableLayout() {
   const [typeBox, setTypeBox] = useState('box2');
 
-  const saveToLocalStorage = (key, value) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(key, JSON.stringify(value));
+  // const saveToLocalStorage = (key, value) => {
+  //   if (typeof window !== 'undefined') {
+  //     localStorage.setItem(key, JSON.stringify(value));
+  //   }
+  // };
+
+  // const loadFromLocalStorage = (key) => {
+  //   const storedValue = localStorage.getItem(key);
+  //   return storedValue ? JSON.parse(storedValue) : null;
+  // };
+
+  const [listBox, setListBox] = useState(() => [
+    {
+      id: '4374182c-aaf7-4476-bec7-7a0d40d80422',
+      width: 100,
+      height: 100,
+      type: 'box2',
+      position: { x: 100, y: 200 }
+    },
+    {
+      id: '482565bf-435f-450a-bcc6-0c4421034598',
+      width: 100,
+      height: 100,
+      type: 'box4',
+      position: { x: 200, y: 300 }
+    },
+    {
+      id: '820ce129-fb0b-4551-91b8-713d754426a6',
+      width: 100,
+      height: 100,
+      type: 'box3',
+      position: { x: 300, y: 100 }
     }
-  };
-
-  const loadFromLocalStorage = (key) => {
-    const storedValue = localStorage.getItem(key);
-    return storedValue ? JSON.parse(storedValue) : null;
-  };
-
-  const [listBox, setListBox] = useState(
-    () =>
-      loadFromLocalStorage('listBox') || [
-        {
-          id: '4374182c-aaf7-4476-bec7-7a0d40d80422',
-          width: 100,
-          height: 100,
-          type: 'box2',
-          position: { x: 100, y: 200 }
-        },
-        {
-          id: '482565bf-435f-450a-bcc6-0c4421034598',
-          width: 100,
-          height: 100,
-          type: 'box4',
-          position: { x: 200, y: 300 }
-        },
-        {
-          id: '820ce129-fb0b-4551-91b8-713d754426a6',
-          width: 100,
-          height: 100,
-          type: 'box3',
-          position: { x: 300, y: 100 }
-        }
-      ]
-  );
+  ]);
 
   const getPosition = (id, newPosition) => {
     setListBox((prevList) => {
@@ -112,7 +109,6 @@ export default function SettingTableLayout() {
               className={buttonClass}
               onClick={() => {
                 console.log('save listBox', listBox);
-                saveToLocalStorage('listBox', listBox);
               }}>
               Save
             </button>
