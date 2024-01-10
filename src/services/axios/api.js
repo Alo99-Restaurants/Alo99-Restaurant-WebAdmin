@@ -14,16 +14,22 @@ function baseAPI(options) {
   const axiosInstance = axios.create({
     ...options?.config,
     baseURL: options?.baseURL || 'https://booking-api.vietmap.io',
-    headers: {
-      ...options?.headers,
-      ...getTokenAPI(),
-    },
     timeout: options?.timeout || 10000,
   });
 
   // Request interceptor for API calls
-  axios.interceptors.request.use(
+  axiosInstance.interceptors.request.use(
     config => {
+      // Kiểm tra và lấy Authorization từ local storage
+      const tokenHeader = getTokenAPI();
+      // Nếu có Authorization, thêm vào headers của request
+      if (tokenHeader) {
+        config.headers = {
+          ...config.headers,
+          ...tokenHeader,
+        };
+      }
+
       return config;
     }
     ,
@@ -40,6 +46,16 @@ function baseAPI(options) {
     },
     error => {
       // Handle errors
+      if (error.response.status === 401) {
+        // Request failed with status code 401 (unauthorized)
+        if (typeof window !== 'undefined') {
+          // Handle logout and redirect to sign in page
+          window.location.replace('/sign-in');
+          window.localStorage.removeItem('accessToken');
+          window.localStorage.removeItem('userInfo');
+        }
+      }
+
       return Promise.reject(error);
     }
   );

@@ -5,6 +5,10 @@ import React, { useState } from 'react';
 
 const menuItems = [
   {
+    label: 'General',
+    key: 'settings/general'
+  },
+  {
     label: 'Floor setting',
     key: 'settings/floor'
   },
@@ -43,7 +47,7 @@ function Settings({ children }) {
     const item = menuItems.find((item) =>
       pathname.startsWith('/settings/' + item.key)
     );
-    return item?.key || 'settings/floor';
+    return item?.key || 'settings/general';
   });
 
   const onClick = (e) => {

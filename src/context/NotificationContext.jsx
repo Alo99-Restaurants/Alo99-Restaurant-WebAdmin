@@ -13,6 +13,11 @@ export const useNotification = () => useContext(NotificationContext);
 export const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
+  /**
+   *  addNotification
+   * @param {string} message
+   * @param {string} type 'success' | 'info' | 'warning' | 'error'
+   */
   const addNotification = (message, type) => {
     const id = uuidv4();
     const notification = { id, message, type };

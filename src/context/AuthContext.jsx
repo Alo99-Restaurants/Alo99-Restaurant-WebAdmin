@@ -19,7 +19,6 @@ const AuthContext = createContext({
 export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useLocalStorage('userInfo', '');
   const [accessToken, setAccessToken] = useLocalStorage('accessToken', '');
-  const [userInfoState, setUserInfoState] = useState(userInfo);
 
   const login = useCallback(
     async (data) => {

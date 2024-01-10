@@ -3,12 +3,14 @@
 import Header from '@/components/Header';
 import { useAuth } from '@/context/AuthContext';
 import { useNotification } from '@/context/NotificationContext';
+import { useLocalStorage } from '@/hook/useLocalStorage';
 import { getRestaurantService } from '@/services/restaurant.service';
 import useStoreBranchesStore from '@/store/storeBranches';
 import { Layout, theme } from 'antd';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 
 const { Content, Footer } = Layout;
 
@@ -16,9 +18,15 @@ const AdminLayout = ({ children }) => {
   const router = useRouter();
   const { userData } = useAuth();
   const { addNotification } = useNotification();
-  const setStoreBranchesStore = useStoreBranchesStore(
-    (state) => state.setStoreBranches
+  const { setStoreBranchesStore, setStoreBranchActive } = useStoreBranchesStore(
+    useShallow((state) => ({
+      setStoreBranchesStore: state.setStoreBranches,
+      setStoreBranchActive: state.setStoreBranchActive
+    }))
   );
+
+  const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
+    useLocalStorage('storeBranchActive');
 
   const [storeBranches, setStoreBranches] = useState();
 
@@ -26,9 +34,21 @@ const AdminLayout = ({ children }) => {
     const fetchDataRestaurantStore = async () => {
       try {
         const response = await getRestaurantService();
-        setStoreBranches(response?.data?.items);
+        const setStoreBranchesResponse = response?.data?.items;
+        const storeBranchActive = setStoreBranchesResponse.find(
+          (branch) => branch.id === JSON.parse(storeBranchActiveLocalStorage).id
+        );
+        setStoreBranches(setStoreBranchesResponse);
         //Zustand
-        setStoreBranchesStore(response?.data?.items);
+        setStoreBranchesStore(setStoreBranchesResponse);
+        setStoreBranchActive(storeBranchActive);
+        // Save to local storage if don't have storeBranchActiveLocalStorage
+        if (!storeBranchActiveLocalStorage.length) {
+          setStoreBranchActiveLocalStorage(
+            JSON.stringify(setStoreBranchesResponse[0])
+          );
+          setStoreBranchActive(setStoreBranchesResponse[0]);
+        }
         // Thêm các xử lý khác ở đây nếu cần
       } catch (error) {
         addNotification(error, 'error');
@@ -36,8 +56,6 @@ const AdminLayout = ({ children }) => {
     };
     fetchDataRestaurantStore();
   }, []);
-
-  console.log('storeBranches', storeBranches);
 
   useEffect(() => {
     if (!userData.userInfo || !userData.token) {

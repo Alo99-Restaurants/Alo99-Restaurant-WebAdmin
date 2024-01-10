@@ -11,6 +11,9 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import Alo99Logo from '../../assets/alo99-logo.png';
+import useStoreBranchesStore from '@/store/storeBranches';
+import { useLocalStorage } from '@/hook/useLocalStorage';
+import { useShallow } from 'zustand/react/shallow';
 
 const { Header: HeaderLib } = Layout;
 const menuItems = [
@@ -46,6 +49,21 @@ const menuItems = [
 function Header() {
   const router = useRouter();
   const pathname = usePathname();
+  const { storeBranches, storeBranchActive, setStoreBranchActive } =
+    useStoreBranchesStore(
+      useShallow((state) => ({
+        storeBranches: state.storeBranches,
+        storeBranchActive: state.storeBranchActive,
+        setStoreBranchActive: state.setStoreBranchActive
+      }))
+    );
+  const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
+    useLocalStorage('storeBranchActive');
+
+  const storeBranchesOptions = storeBranches.map((store) => {
+    return { value: store.id, label: store.name };
+  });
+
   const [selectedKey, setSelectedKey] = useState(() => {
     const item = menuItems.find((item) => pathname.startsWith('/' + item.key));
     return item?.key || 'dashboard';
@@ -56,9 +74,17 @@ function Header() {
     router.push('/' + key, { scroll: false });
   };
 
+  const handleChangeStoreBranch = (value) => {
+    const storeBranchActive = storeBranches.find(
+      (branch) => branch.id === value
+    );
+    setStoreBranchActiveLocalStorage(JSON.stringify(storeBranchActive));
+    setStoreBranchActive(storeBranchActive);
+  };
+
   return (
     <HeaderLib className='flex items-center bg-white shadow'>
-      <div className='w-[100px]'>
+      <div className='w-[100px] flex justify-center items-center'>
         <Image src={Alo99Logo} alt='Alo99 Logo' width={60} priority />
       </div>
       <Menu
@@ -71,16 +97,20 @@ function Header() {
         items={menuItems}
       />
       <div className='w-[200px]'>
-        <Select
-          defaultValue={1}
-          style={{ width: 200 }}
-          options={[
-            { value: 1, label: 'Alo99 Chi nhánh 1' },
-            { value: 3, label: 'Alo99 Chi nhánh 2' },
-            { value: 4, label: 'Alo99 Chi nhánh 3', disabled: true }
-          ]}
-        />
+        {storeBranchesOptions.length > 0 && (
+          <Select
+            defaultValue={
+              storeBranchesOptions.length > 0
+                ? JSON.parse(storeBranchActiveLocalStorage).id
+                : storeBranchesOptions[0]
+            }
+            onChange={handleChangeStoreBranch}
+            style={{ width: 200 }}
+            options={storeBranchesOptions ?? []}
+          />
+        )}
       </div>
+
       <div className='pl-4'>
         <Avatar size={40} icon={<UserOutlined />} />
       </div>

@@ -14,7 +14,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className='login-form-wrapper w-full h-screen pb-10 flex justify-center items-center bg-[#e3e3e3]'>
+    <div className='login-form-wrapper w-full h-screen flex justify-center items-center bg-[#e3e3e3]'>
       <div className='login-form w-[400px] p-10 bg-[#f7f7f780] backdrop-blur-md shadow-md rounded-xl'>
         <div className='logo p-5 flex justify-center items-end'>
           <Image src={Alo99Logo} alt='Alo99 Logo' width={100} priority />
