@@ -10,7 +10,7 @@ import { twMerge } from 'tailwind-merge';
  * cn(false && "text-red-500", "bg-blue-400", "font-bold")
  * → Return: "bg-blue-400", "font-bold"
  */
-export default function cn(...args) {
+export function cn(...args) {
   /**
    * Use clsx to combine CSS classes
    * @see [clsx Documentation] (https://www.npmjs.com/package/clsx)
@@ -30,4 +30,22 @@ export default function cn(...args) {
   const tailwindClasses = twMerge(combinedClasses);
 
   return tailwindClasses;
+}
+
+export function stringifyData(array) {
+  if( typeof window === 'undefined') return;
+
+  const jsonString = JSON.stringify(array);
+  const escapedString = jsonString.replace(/"/g, '\\"');
+
+  return escapedString;
+}
+
+export function unescapeStringData(escapedString) {
+  if (typeof window === 'undefined') return;
+
+  var removeString = escapedString.replace(/\\"/g, '"');
+  const originalString = JSON.parse(removeString);
+
+  return originalString;
 }

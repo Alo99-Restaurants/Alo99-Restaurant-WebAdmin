@@ -119,3 +119,27 @@ export async function postRestaurantFloorsService(payload) {
     throw error.message;
   }
 }
+
+export async function getRestaurantFloorByIdService(id) {
+  try {
+    const response = await baseAPI.get(
+      `/api/RestaurantFloor/${id}`
+    );
+    return response;
+  } catch (error) {
+    console.error('Get Restaurant Floor Detail Service Error', error);
+    throw error.message;
+  }
+}
+
+export async function updateRestaurantFloorByIdService(id, payload) {
+  try {
+    const response = await baseAPI.put(
+      `/api/RestaurantFloor/${id}`, payload
+    );
+    return response;
+  } catch (error) {
+    console.error('Get Restaurant Floor Detail Service Error', error);
+    throw error.message;
+  }
+}

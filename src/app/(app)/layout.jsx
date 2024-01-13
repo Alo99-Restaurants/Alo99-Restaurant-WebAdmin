@@ -27,6 +27,7 @@ const AdminLayout = ({ children }) => {
 
   const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
     useLocalStorage('storeBranchActive');
+  const storeBranchActiveId = typeof window !== 'undefined' && JSON.parse(storeBranchActiveLocalStorage).id;
 
   const [storeBranches, setStoreBranches] = useState();
 
@@ -36,7 +37,7 @@ const AdminLayout = ({ children }) => {
         const response = await getRestaurantService();
         const setStoreBranchesResponse = response?.data?.items;
         const storeBranchActive = setStoreBranchesResponse.find(
-          (branch) => branch.id === JSON.parse(storeBranchActiveLocalStorage).id
+          (branch) => branch.id === storeBranchActiveId
         );
         setStoreBranches(setStoreBranchesResponse);
         //Zustand
@@ -49,7 +50,6 @@ const AdminLayout = ({ children }) => {
           );
           setStoreBranchActive(setStoreBranchesResponse[0]);
         }
-        // Thêm các xử lý khác ở đây nếu cần
       } catch (error) {
         addNotification(error, 'error');
       }

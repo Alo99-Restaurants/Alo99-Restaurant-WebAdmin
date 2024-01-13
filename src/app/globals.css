@@ -5,7 +5,8 @@
 }
 
 body {
-  button[type="submit"] {
-    background-color: #4096ff !important;
-  }
+}
+
+button[type="submit"] {
+  background-color: #4096ff !important;
 }

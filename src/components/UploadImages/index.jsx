@@ -4,6 +4,7 @@ import { Modal, Upload } from 'antd';
 import Image from 'next/image';
 import { uploadImageService } from '@/services/upload.service';
 import {
+  deleteRestaurantImageByIdService,
   getRestaurantImageByIdService,
   postRestaurantImageByIdService
 } from '@/services/restaurant.service';
@@ -96,12 +97,24 @@ const UploadImages = ({ idStoreBranch }) => {
       }
     } catch (err) {
       console.log('Error: ', err);
-      const newError = new Error('Some error');
+      const newError = new Error('Can not upload image error');
       onError({ newError });
+      addNotification(newError, 'error');
+      return false;
     }
   };
   const handleRemove = async (file) => {
-    console.log('file', file);
+    try {
+      if (!file.uid) throw new Error('Image invalid');
+      const response = await deleteRestaurantImageByIdService(file.uid);
+      console.log('response delete image', response);
+      if (response?.data?.data) {
+        addNotification('Delete restaurant image successful', 'success');
+      }
+    } catch (error) {
+        addNotification('Delete restaurant image error', 'error');
+        return false;
+    }
   };
   return (
     <>

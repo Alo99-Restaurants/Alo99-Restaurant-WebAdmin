@@ -4,7 +4,7 @@ import './globals.css';
 import { AuthProvider } from '@/context/AuthContext';
 import { NotificationProvider } from '@/context/NotificationContext';
 import Notification from '@/components/Notification';
-import cn from '@/helper';
+import { cn } from '@/helper';
 
 const inter = Inter({ subsets: ['latin'] });
 
