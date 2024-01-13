@@ -1,28 +1,68 @@
+'use client';
 import PrimaryTable from '@/components/shared/PrimaryTable';
-import React from 'react';
+import { getRestaurantFloorsService } from '@/services/restaurant.service';
+import useStoreBranchesStore from '@/store/storeBranches';
+import React, { useEffect, useState } from 'react';
+
+const columns = [
+  {
+    title: 'Floor Name',
+    dataIndex: 'name',
+    key: 'name'
+  },
+  {
+    title: 'Floor Name',
+    dataIndex: 'name',
+    key: 'name'
+  },
+  {
+    title: 'Floor Number',
+    dataIndex: 'floorNumber',
+    key: 'floorNumber'
+  },
+  {
+    title: 'Capacity',
+    dataIndex: 'capacity',
+    key: 'capacity'
+  },
+  {
+    title: 'Layout Image Url',
+    dataIndex: 'layoutUrl'
+  },
+  {
+    title: 'Action',
+    dataIndex: 'action'
+  }
+];
 
 function FloorPage() {
-  const columns = [
-    {
-      title: 'ID',
-      dataIndex: 'id'
-    },
-    {
-      title: 'Floor Name',
-      dataIndex: 'floorName'
-    },
-    {
-      title: 'Description',
-      dataIndex: 'description'
-    },
-    {
-      title: 'Action',
-      dataIndex: 'action'
+  const storeBranchActive = useStoreBranchesStore(
+    (state) => state.storeBranchActive
+  );
+  const [restaurantFloors, setRestaurantFloors] = useState([]);
+
+  const fetchRestaurantFloor = async () => {
+    const response = await getRestaurantFloorsService(storeBranchActive.id);
+    const restaurantFloors = response?.data?.items;
+    if (restaurantFloors) {
+      setRestaurantFloors(restaurantFloors);
     }
-  ];
+    console.log('response', response);
+  };
+  console.log('storeBranchActive', storeBranchActive);
+  useEffect(() => {
+    if (storeBranchActive.id) {
+      fetchRestaurantFloor();
+    }
+  }, [storeBranchActive.id]);
+
   return (
     <div className='p-2'>
-      <PrimaryTable columns={columns} dataSource={[]} />
+      <PrimaryTable
+        rowKey='name'
+        columns={columns}
+        dataSource={restaurantFloors}
+      />
     </div>
   );
 }

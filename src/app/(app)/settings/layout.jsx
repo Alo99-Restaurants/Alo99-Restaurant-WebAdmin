@@ -1,47 +1,73 @@
 'use client';
+import useStoreBranchesStore from '@/store/storeBranches';
 import { Menu } from 'antd';
 import { usePathname, useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-const menuItems = [
-  {
-    label: 'General',
-    key: 'settings/general'
-  },
-  {
-    label: 'Floor setting',
-    key: 'settings/floor'
-  },
-  {
-    label: 'Setting option 2',
-    key: 'settings/option2',
-    disabled: true
-  },
-  {
-    label: 'Change table layout',
-    key: 'settings/option3',
-    children: [
+function Settings({ children }) {
+  const storeBranchActive = useStoreBranchesStore(
+    (state) => state.storeBranchActive
+  );
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const restaurantFloorsOptions = useMemo(() => {
+    return (
+      (storeBranchActive &&
+        storeBranchActive.restaurantFloors &&
+        storeBranchActive.restaurantFloors.reverse().map((floor) => ({
+          label: floor.name,
+          key: `settings/floor/${floor.id}`
+        }))) ??
+      []
+    );
+  }, [storeBranchActive]);
+
+  const menuItems = useMemo(
+    () => [
       {
-        type: 'group',
-        label: 'Alo99 Chi nhánh 1',
+        label: 'General',
+        key: 'settings/general'
+      },
+      {
+        label: 'Floor setting',
+        key: '',
         children: [
           {
-            label: 'Tầng 1',
-            key: 'settings/floor/1'
-          },
+            type: 'group',
+            label: 'Alo99 Chi nhánh 1',
+            children: [
+              {
+                label: 'List',
+                key: 'settings/floor'
+              },
+              {
+                label: 'Add new',
+                key: 'settings/floor/create'
+              }
+            ]
+          }
+        ]
+      },
+      {
+        label: 'Setting option 2',
+        key: 'settings/option2',
+        disabled: true
+      },
+      {
+        label: 'Change table layout',
+        key: 'settings/option3',
+        children: [
           {
-            label: 'Tầng 2',
-            key: 'settings/floor/2'
+            type: 'group',
+            label: 'Alo99 Chi nhánh 1',
+            children: restaurantFloorsOptions ?? []
           }
         ]
       }
-    ]
-  }
-];
-
-function Settings({ children }) {
-  const router = useRouter();
-  const pathname = usePathname();
+    ],
+    [restaurantFloorsOptions]
+  );
 
   const [selectedKey, setSelectedKey] = useState(() => {
     const item = menuItems.find((item) =>

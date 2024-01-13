@@ -86,3 +86,36 @@ export async function postRestaurantImageByIdService(id, imgURL, description = '
     throw error.message;
   }
 }
+
+export async function deleteRestaurantImageByIdService(id) {
+  try {
+    const response = await baseAPI.delete(`/api/RestaurantImage/${id}`);
+    return response;
+  } catch (error) {
+    console.error('Delete Restaurant Image Service Error', error);
+    throw error.message;
+  }
+}
+
+// Restaurant floor service
+export async function getRestaurantFloorsService(id) {
+  try {
+    const response = await baseAPI.get(
+      `/api/RestaurantFloor?RestaurantId=${id}`
+    );
+    return response;
+  } catch (error) {
+    console.error('Get Restaurant Floors Service Error', error);
+    throw error.message;
+  }
+}
+
+export async function postRestaurantFloorsService(payload) {
+  try {
+    const response = await baseAPI.post('/api/RestaurantFloor', payload);
+    return response;
+  } catch (error) {
+    console.error('Post Restaurant Floors Service Error', error);
+    throw error.message;
+  }
+}

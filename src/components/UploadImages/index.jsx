@@ -79,11 +79,6 @@ const UploadImages = ({ idStoreBranch }) => {
     const config = {
       headers: { 'content-type': 'multipart/form-data' },
       onUploadProgress: (event) => {
-        // const percent = Math.floor((event.loaded / event.total) * 100);
-        // setProgress(percent);
-        // if (percent === 100) {
-        //   setTimeout(() => setProgress(0), 1000);
-        // }
         onProgress({ percent: (event.loaded / event.total) * 100 });
       }
     };
@@ -105,7 +100,9 @@ const UploadImages = ({ idStoreBranch }) => {
       onError({ newError });
     }
   };
-
+  const handleRemove = async (file) => {
+    console.log('file', file);
+  };
   return (
     <>
       <Upload
@@ -114,6 +111,7 @@ const UploadImages = ({ idStoreBranch }) => {
         listType='picture-card'
         fileList={fileList}
         onPreview={handlePreview}
+        onRemove={handleRemove}
         onChange={handleChange}>
         {fileList.length >= 8 ? null : uploadButton}
       </Upload>
