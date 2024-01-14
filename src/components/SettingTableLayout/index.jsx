@@ -1,46 +1,20 @@
 'use client';
 import TableItem from '@/components/SettingTableLayout/TableItem';
+import { useNotification } from '@/context/NotificationContext';
+import { stringifyData } from '@/helper';
+import { updateFloorTablesService } from '@/services/restaurant.table.service';
 import { Select } from 'antd';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function SettingTableLayout({ floorId }) {
-  const [typeBox, setTypeBox] = useState('box2');
+export default function SettingTableLayout({ floorId, floorTables }) {
+  const { addNotification } = useNotification();
+  const [typeBox, setTypeBox] = useState(2);
+  const [listBox, setListBox] = useState(floorTables);
 
-  // const saveToLocalStorage = (key, value) => {
-  //   if (typeof window !== 'undefined') {
-  //     localStorage.setItem(key, JSON.stringify(value));
-  //   }
-  // };
-
-  // const loadFromLocalStorage = (key) => {
-  //   const storedValue = localStorage.getItem(key);
-  //   return storedValue ? JSON.parse(storedValue) : null;
-  // };
-
-  const [listBox, setListBox] = useState(() => [
-    {
-      id: '4374182c-aaf7-4476-bec7-7a0d40d80422',
-      width: 100,
-      height: 100,
-      type: 'box2',
-      position: { x: 100, y: 200 }
-    },
-    {
-      id: '482565bf-435f-450a-bcc6-0c4421034598',
-      width: 100,
-      height: 100,
-      type: 'box4',
-      position: { x: 200, y: 300 }
-    },
-    {
-      id: '820ce129-fb0b-4551-91b8-713d754426a6',
-      width: 100,
-      height: 100,
-      type: 'box3',
-      position: { x: 300, y: 100 }
-    }
-  ]);
+  useEffect(() => {
+    setListBox(floorTables);
+  }, [floorTables]);
 
   const getPosition = (id, newPosition) => {
     setListBox((prevList) => {
@@ -72,13 +46,29 @@ export default function SettingTableLayout({ floorId }) {
     'text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2';
 
   const handleSaveFloorTables = async () => {
+    const payloadsTables = listBox.map((table) => {
+      return {
+        restaurantFloorId: floorId,
+        tableName: table.tableName ?? 'table new',
+        tableType: table.type,
+        capacity: table.capacity ?? table.type,
+        extensionData: stringifyData({
+          width: table.width,
+          height: table.height,
+          position: { x: table.position.x, y: table.position.y }
+        })
+      };
+    });
+
     const payload = {
       restaurantFloorId: floorId,
-      tableName: 'string',
-      tableType: 0,
-      capacity: 0,
-      extensionData: 'string'
+      tables: payloadsTables
     };
+
+    const res = await updateFloorTablesService(payload);
+    if (res?.data) {
+      addNotification('Update restaurant floor layout successful', 'success');
+    }
   };
 
   return (
@@ -87,14 +77,14 @@ export default function SettingTableLayout({ floorId }) {
         <div className='flex flex-col h-full'>
           <div className='add-table flex flex-col'>
             <Select
-              defaultValue='lucy'
+              defaultValue={2}
               className='me-2 mb-2'
               value={typeBox}
               onChange={handleChangeSelect}
               options={[
-                { value: 'box2', label: 'Bàn 2' },
-                { value: 'box3', label: 'Bàn 3' },
-                { value: 'box4', label: 'Bàn 4' }
+                { value: 2, label: 'Bàn 2' },
+                { value: 3, label: 'Bàn 3' },
+                { value: 4, label: 'Bàn 4' }
               ]}
             />
             <button

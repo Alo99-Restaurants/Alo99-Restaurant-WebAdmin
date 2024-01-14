@@ -14,6 +14,7 @@ import Alo99Logo from '../../assets/alo99-logo.png';
 import useStoreBranchesStore from '@/store/storeBranches';
 import { useLocalStorage } from '@/hook/useLocalStorage';
 import { useShallow } from 'zustand/react/shallow';
+import { JSONParse } from '@/helper';
 
 const { Header: HeaderLib } = Layout;
 const menuItems = [
@@ -101,7 +102,7 @@ function Header() {
           <Select
             defaultValue={
               storeBranchesOptions.length > 0
-                ? JSON.parse(storeBranchActiveLocalStorage).id
+                ? JSONParse(storeBranchActiveLocalStorage).id
                 : storeBranchesOptions[0]
             }
             onChange={handleChangeStoreBranch}

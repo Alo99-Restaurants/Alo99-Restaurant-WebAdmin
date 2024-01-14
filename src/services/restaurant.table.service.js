@@ -21,9 +21,9 @@ export async function postFloorTablesService(payload) {
   }
 }
 
-export async function updateFloorTablesService(payload) {
+export async function updateFloorTablesService(payloads) {
   try {
-    const response = await baseAPI.put('/api/Table/updates', payload);
+    const response = await baseAPI.put('/api/Table/updates', payloads);
     return response;
   } catch (error) {
     console.error('Update Floor Tables Service Error', error);
