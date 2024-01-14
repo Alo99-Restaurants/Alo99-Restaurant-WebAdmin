@@ -4,7 +4,7 @@ import { Select } from 'antd';
 import { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function SettingTableLayout() {
+export default function SettingTableLayout({ floorId }) {
   const [typeBox, setTypeBox] = useState('box2');
 
   // const saveToLocalStorage = (key, value) => {
@@ -71,6 +71,16 @@ export default function SettingTableLayout() {
   const buttonDeleteClass =
     'text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2';
 
+  const handleSaveFloorTables = async () => {
+    const payload = {
+      restaurantFloorId: floorId,
+      tableName: 'string',
+      tableType: 0,
+      capacity: 0,
+      extensionData: 'string'
+    };
+  };
+
   return (
     <main className='flex flex-row justify-between'>
       <div className='flex-[0.1]'>
@@ -105,11 +115,7 @@ export default function SettingTableLayout() {
             </button>
           </div>
           <div className='save-delete-table flex flex-col'>
-            <button
-              className={buttonClass}
-              onClick={() => {
-                console.log('save listBox', listBox);
-              }}>
+            <button className={buttonClass} onClick={handleSaveFloorTables}>
               Save
             </button>
             <button
