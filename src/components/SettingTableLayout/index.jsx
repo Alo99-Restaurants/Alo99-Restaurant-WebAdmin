@@ -67,7 +67,7 @@ export default function SettingTableLayout({ floorId, floorTables }) {
 
     const res = await updateFloorTablesService(payload);
     if (res?.data) {
-      addNotification('Update successful', 'success');
+      addNotification('Update layout successful', 'success');
     }
   };
 
