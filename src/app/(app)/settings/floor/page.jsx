@@ -47,9 +47,7 @@ function FloorPage() {
     if (restaurantFloors) {
       setRestaurantFloors(restaurantFloors);
     }
-    console.log('response', response);
   };
-  console.log('storeBranchActive', storeBranchActive);
   useEffect(() => {
     if (storeBranchActive.id) {
       fetchRestaurantFloor();

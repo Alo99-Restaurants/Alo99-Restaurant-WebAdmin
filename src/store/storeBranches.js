@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 const useStoreBranchesStore = create((set) => ({
-  storeBranchActive: {},
+  storeBranchActive: { id: 0 },
   storeBranches: [],
   setStoreBranches: (storeBranches) => set({ storeBranches }),
   setStoreBranchActive: (storeBranchActive) => set({ storeBranchActive }),

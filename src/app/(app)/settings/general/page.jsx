@@ -21,7 +21,6 @@ function GeneralPage() {
       setStoreBranchActive: state.setStoreBranchActive
     }))
   );
-
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -55,7 +54,7 @@ function GeneralPage() {
           <Title className='text-center mb-8' level={4}>
             Restaurant Images
           </Title>
-          <UploadImages idStoreBranch={storeBranchActive.id} />
+          <UploadImages idStoreBranch={storeBranchActive?.id} />
         </div>
       </div>
     </div>

@@ -82,6 +82,11 @@ function Header() {
     setStoreBranchActive(storeBranchActive);
   };
 
+  const defaultValueBranchActive =
+    typeof window !== undefined
+      ? JSON.parse(storeBranchActiveLocalStorage).id
+      : undefined;
+
   return (
     <HeaderLib className='flex items-center bg-white shadow'>
       <div className='w-[100px] flex justify-center items-center'>
@@ -99,11 +104,7 @@ function Header() {
       <div className='w-[200px]'>
         {storeBranchesOptions.length > 0 && (
           <Select
-            defaultValue={
-              storeBranchesOptions.length > 0
-                ? JSON.parse(storeBranchActiveLocalStorage).id
-                : storeBranchesOptions[0]
-            }
+            defaultValue={defaultValueBranchActive}
             onChange={handleChangeStoreBranch}
             style={{ width: 200 }}
             options={storeBranchesOptions ?? []}
