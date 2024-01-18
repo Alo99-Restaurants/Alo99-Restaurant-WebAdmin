@@ -7,17 +7,6 @@ import { v4 as uuidv4 } from 'uuid';
 export default function SettingTableLayout({ floorId }) {
   const [typeBox, setTypeBox] = useState('box2');
 
-  // const saveToLocalStorage = (key, value) => {
-  //   if (typeof window !== 'undefined') {
-  //     localStorage.setItem(key, JSON.stringify(value));
-  //   }
-  // };
-
-  // const loadFromLocalStorage = (key) => {
-  //   const storedValue = localStorage.getItem(key);
-  //   return storedValue ? JSON.parse(storedValue) : null;
-  // };
-
   const [listBox, setListBox] = useState(() => [
     {
       id: '4374182c-aaf7-4476-bec7-7a0d40d80422',

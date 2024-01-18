@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from "react";
 
-export const useLocalStorage = (keyName, defaultValue = '') => {
+export const useLocalStorage = (keyName, defaultValue = '{}') => {
   const [storedValue, setStoredValue] = useState(() => {
     if (typeof window !== 'undefined') {
       const value = window.localStorage.getItem(keyName);
