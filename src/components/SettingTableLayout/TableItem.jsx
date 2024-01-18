@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useMemo, useState } from 'react';
 import useDraggable from '@/hook/useDraggable';
+import { TABLE_TYPE } from '@/constants';
 
 function TableItem(props) {
   const [active, setActive] = useState(false);
@@ -25,11 +26,11 @@ function TableItem(props) {
 
   const memoizedClassName = useMemo(() => {
     function classNameTableItem(type) {
-      if (type === 'box2') {
+      if (type === TABLE_TYPE.TWO_SEATS) {
         return 'absolute bg-orange-500 h-[100px] w-[100px] cursor-pointer select-none';
-      } else if (type === 'box3') {
+      } else if (type === TABLE_TYPE.THREE_SEATS) {
         return 'absolute bg-green-500 h-[100px] w-[100px] cursor-pointer select-none';
-      } else if (type === 'box4') {
+      } else if (type === TABLE_TYPE.FOUR_SEATS) {
         return 'absolute bg-blue-500 h-[100px] w-[100px] cursor-pointer select-none';
       }
       return '';

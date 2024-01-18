@@ -1,0 +1,7 @@
+export const TABLE_TYPE = {
+  TWO_SEATS: 2,
+  THREE_SEATS: 3,
+  FOUR_SEATS: 4,
+  SIX_SEATS: 6,
+  EIGHT_SEATS: 8
+};

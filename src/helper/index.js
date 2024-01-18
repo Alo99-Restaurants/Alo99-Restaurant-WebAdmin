@@ -36,16 +36,25 @@ export function stringifyData(array) {
   if( typeof window === 'undefined') return;
 
   const jsonString = JSON.stringify(array);
-  const escapedString = jsonString.replace(/"/g, '\\"');
-
-  return escapedString;
+  return jsonString;
 }
 
 export function unescapeStringData(escapedString) {
   if (typeof window === 'undefined') return;
 
   var removeString = escapedString.replace(/\\"/g, '"');
-  const originalString = JSON.parse(removeString);
+  const originalString = JSONParse(removeString);
 
   return originalString;
+}
+
+export function JSONParse(jsonString) {
+  try {
+    if (typeof window !== 'undefined') {
+      return JSON.parse(jsonString);
+    }
+    return {};
+  } catch (error) {
+    return {};
+  }
 }

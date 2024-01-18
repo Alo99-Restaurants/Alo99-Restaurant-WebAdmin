@@ -3,6 +3,7 @@ import SettingTableLayout from '@/components/SettingTableLayout';
 import { useNotification } from '@/context/NotificationContext';
 import { stringifyData, unescapeStringData } from '@/helper';
 import { getRestaurantFloorByIdService } from '@/services/restaurant.service';
+import { getFloorTablesService } from '@/services/restaurant.table.service';
 import Title from 'antd/es/typography/Title';
 import React, { useEffect, useState } from 'react';
 
@@ -10,9 +11,10 @@ function FloorDetail(props) {
   const {
     params: { floor_id: floorId }
   } = props;
+  const { addNotification } = useNotification();
 
   const [floor, setFloor] = useState({});
-  const { addNotification } = useNotification();
+  const [floorTables, setFloorTables] = useState([]);
 
   const fetchRestaurantFloor = async (id) => {
     try {
@@ -22,18 +24,42 @@ function FloorDetail(props) {
         setFloor(response.data.data);
       }
     } catch (error) {
-      addNotification('Can not get restaurant info', 'error');
+      addNotification('Can not get restaurant floor info', 'error');
+    }
+  };
+
+  const fetchRestaurantFloorTables = async (id) => {
+    try {
+      if (!id) return;
+      const response = await getFloorTablesService(id);
+      if (response?.data?.items) {
+        setFloorTables(response.data.items);
+      }
+    } catch (error) {
+      addNotification('Can not get restaurant floor tables info', 'error');
     }
   };
 
   useEffect(() => {
     if (floorId) {
       fetchRestaurantFloor(floorId);
+      fetchRestaurantFloorTables(floorId);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [floorId]);
 
-  console.log('floor', floor);
+  const mapDataTables = floorTables.map((table) => {
+    const extensionData = unescapeStringData(table.extensionData);
+    return {
+      id: table.id,
+      type: table.tableType,
+      width: extensionData.width,
+      height: extensionData.height,
+      position: extensionData.position,
+      capacity: table.capacity,
+      tableName: table.tableName
+    };
+  });
 
   return (
     <div className='px-10'>
@@ -41,7 +67,11 @@ function FloorDetail(props) {
         Sơ đồ tầng {floor.name}
       </Title>
       <div>
-        <SettingTableLayout floorId={floorId} />
+        <SettingTableLayout
+          floorId={floorId}
+          floorTables={mapDataTables}
+          onSaveLayout={fetchRestaurantFloorTables}
+        />
       </div>
     </div>
   );
