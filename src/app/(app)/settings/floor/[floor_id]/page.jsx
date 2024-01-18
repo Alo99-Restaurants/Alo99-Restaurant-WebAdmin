@@ -5,7 +5,7 @@ import { stringifyData, unescapeStringData } from '@/helper';
 import { getRestaurantFloorByIdService } from '@/services/restaurant.service';
 import { getFloorTablesService } from '@/services/restaurant.table.service';
 import Title from 'antd/es/typography/Title';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 function FloorDetail(props) {
   const {
@@ -28,7 +28,7 @@ function FloorDetail(props) {
     }
   };
 
-  const fetchRestaurantFloorTables = async (id) => {
+  const fetchRestaurantFloorTables = useCallback(async (id) => {
     try {
       if (!id) return;
       const response = await getFloorTablesService(id);
@@ -38,7 +38,7 @@ function FloorDetail(props) {
     } catch (error) {
       addNotification('Can not get restaurant floor tables info', 'error');
     }
-  };
+  }, []);
 
   useEffect(() => {
     if (floorId) {

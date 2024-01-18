@@ -4,14 +4,10 @@ import { useNotification } from '@/context/NotificationContext';
 import { stringifyData } from '@/helper';
 import { updateFloorTablesService } from '@/services/restaurant.table.service';
 import { Select } from 'antd';
-import { useEffect, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-export default function SettingTableLayout({
-  floorId,
-  floorTables,
-  onSaveLayout
-}) {
+const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
   const { addNotification } = useNotification();
   const [typeBox, setTypeBox] = useState(2);
   const [listBox, setListBox] = useState(floorTables);
@@ -137,4 +133,6 @@ export default function SettingTableLayout({
       </div>
     </main>
   );
-}
+};
+
+export default memo(SettingTableLayout);
