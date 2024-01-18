@@ -39,6 +39,7 @@ function TableItem(props) {
 
   useEffect(() => {
     handelChangePosition(id, positionRef);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [positionRef]);
 
   return (

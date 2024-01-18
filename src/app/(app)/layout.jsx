@@ -27,7 +27,9 @@ const AdminLayout = ({ children }) => {
 
   const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
     useLocalStorage('storeBranchActive');
-  const storeBranchActiveId = typeof window !== 'undefined' && JSON.parse(storeBranchActiveLocalStorage).id;
+  const storeBranchActiveId =
+    typeof window !== 'undefined' &&
+    JSON.parse(storeBranchActiveLocalStorage).id;
 
   const [storeBranches, setStoreBranches] = useState();
 
@@ -55,12 +57,14 @@ const AdminLayout = ({ children }) => {
       }
     };
     fetchDataRestaurantStore();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (!userData.userInfo || !userData.token) {
       router.replace('/sign-in');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
   const {

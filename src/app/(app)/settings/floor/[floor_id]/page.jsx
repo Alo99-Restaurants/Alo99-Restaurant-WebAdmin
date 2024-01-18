@@ -30,6 +30,7 @@ function FloorDetail(props) {
     if (floorId) {
       fetchRestaurantFloor(floorId);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [floorId]);
 
   console.log('floor', floor);

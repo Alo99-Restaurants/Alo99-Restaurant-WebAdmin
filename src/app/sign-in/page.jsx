@@ -12,6 +12,7 @@ function LoginPage() {
     if (userData.userInfo && userData.token) {
       router.replace('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userData]);
 
   if (userData.userInfo) return <></>;
