@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
   const { addNotification } = useNotification();
   const [typeBox, setTypeBox] = useState(2);
-  const [listBox, setListBox] = useState(floorTables);
+  const [listBox, setListBox] = useState(floorTables ?? []);
 
   useEffect(() => {
     setListBox(floorTables);
