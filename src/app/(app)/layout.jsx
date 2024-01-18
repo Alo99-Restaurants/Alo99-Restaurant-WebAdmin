@@ -47,9 +47,9 @@ const AdminLayout = ({ children }) => {
         setStoreBranchActive(storeBranchActive);
         // Save to local storage if don't have storeBranchActiveLocalStorage
         if (!storeBranchActiveLocalStorage.length) {
-          setStoreBranchActiveLocalStorage(
-            JSON.stringify(setStoreBranchesResponse[0])
-          );
+          const setStoreBranchesResponse0 =
+            typeof window !== 'undefined' && setStoreBranchesResponse[0];
+          setStoreBranchActiveLocalStorage(setStoreBranchesResponse0);
           setStoreBranchActive(setStoreBranchesResponse[0]);
         }
       } catch (error) {
