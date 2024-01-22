@@ -139,7 +139,19 @@ export async function updateRestaurantFloorByIdService(id, payload) {
     );
     return response;
   } catch (error) {
-    console.error('Get Restaurant Floor Detail Service Error', error);
+    console.error('Update Restaurant Floor Detail Service Error', error);
+    throw error.message;
+  }
+}
+
+export async function deleteRestaurantFloorByIdService(id) {
+  try {
+    const response = await baseAPI.delete(
+      `/api/RestaurantFloor/${id}`
+    );
+    return response;
+  } catch (error) {
+    console.error('Delete Restaurant Floor Detail Service Error', error);
     throw error.message;
   }
 }

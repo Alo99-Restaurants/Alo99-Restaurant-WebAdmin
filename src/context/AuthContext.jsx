@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     async (data) => {
       const response = await loginService(data);
       const { jwtToken, userInfor } = response.data.data;
-      setUserInfo(JSON.stringify({ userInfo: userInfor, token: jwtToken }));
+      setUserInfo({ userInfo: userInfor, token: jwtToken });
       setAccessToken(jwtToken);
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
 
   const value = useMemo(
     () => ({
-      userData: JSON.parse(userInfo || '{}'),
+      userData: userInfo,
       login,
       logout
     }),

@@ -1,19 +1,12 @@
 'use client';
 import FloorForm from '@/components/FloorForm';
-import RestaurantInfoForm from '@/components/RestaurantInfoForm';
-import UploadImages from '@/components/UploadImages';
 import { useNotification } from '@/context/NotificationContext';
-import { useLocalStorage } from '@/hook/useLocalStorage';
 import {
-  getRestaurantByIdService,
-  postRestaurantFloorsService,
-  updateRestaurantService
+  postRestaurantFloorsService
 } from '@/services/restaurant.service';
 import useStoreBranchesStore from '@/store/storeBranches';
-import { Button, DatePicker, Form, Input, Space } from 'antd';
+import { Form } from 'antd';
 import Title from 'antd/es/typography/Title';
-import { useEffect, useState } from 'react';
-import { useShallow } from 'zustand/react/shallow';
 
 function CreateFloor() {
   const { addNotification } = useNotification();

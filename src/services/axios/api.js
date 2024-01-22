@@ -3,7 +3,7 @@ import axios from 'axios';
 function baseAPI(options) {
   const getTokenAPI = () => {
     if (typeof window !== 'undefined') {
-      const value = window.localStorage.getItem('accessToken');
+      const value = JSON.parse(window.localStorage.getItem('accessToken'));
       if (value) {
         return { Authorization: 'Bearer ' + value };
       }

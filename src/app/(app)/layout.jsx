@@ -19,22 +19,30 @@ const AdminLayout = ({ children }) => {
   const router = useRouter();
   const { userData } = useAuth();
   const { addNotification } = useNotification();
-  const { setStoreBranchesStore, setStoreBranchActive } = useStoreBranchesStore(
+  const {
+    isUpdate,
+    storeBranches: storeBranchesGlobal,
+    storeBranchActive: storeBranchActiveGlobal,
+    setStoreBranchesStore,
+    setStoreBranchActive
+  } = useStoreBranchesStore(
     useShallow((state) => ({
+      isUpdate: state.isUpdate,
+      storeBranches: state.storeBranches,
+      storeBranchActive: state.storeBranchActive,
       setStoreBranchesStore: state.setStoreBranches,
       setStoreBranchActive: state.setStoreBranchActive
     }))
   );
-
   const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
     useLocalStorage('storeBranchActive');
-  const storeBranchActiveId =
-    typeof window !== 'undefined' &&
-    JSON.parse(storeBranchActiveLocalStorage).id;
+
+  const storeBranchActiveId = storeBranchActiveLocalStorage.id;
 
   const [storeBranches, setStoreBranches] = useState();
 
   useEffect(() => {
+    console.log('fetchDataRestaurantStore---------------', isUpdate);
     const fetchDataRestaurantStore = async () => {
       try {
         const response = await getRestaurantService();
@@ -47,12 +55,9 @@ const AdminLayout = ({ children }) => {
         setStoreBranchesStore(setStoreBranchesResponse);
         setStoreBranchActive(storeBranchActive);
         // Save to local storage if don't have storeBranchActiveLocalStorage
-        if (!storeBranchActiveLocalStorage.length) {
-          const setStoreBranchesResponse0 =
-            typeof window !== 'undefined' && setStoreBranchesResponse[0];
-          setStoreBranchActiveLocalStorage(setStoreBranchesResponse0);
-          setStoreBranchActive(setStoreBranchesResponse[0]);
-        }
+        const setStoreBranchesResponse0 = setStoreBranchesResponse[0];
+        setStoreBranchActiveLocalStorage(setStoreBranchesResponse0);
+        setStoreBranchActive(setStoreBranchesResponse[0]);
       } catch (error) {
         addNotification(error, 'error');
       }

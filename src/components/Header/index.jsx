@@ -14,7 +14,6 @@ import Alo99Logo from '../../assets/alo99-logo.png';
 import useStoreBranchesStore from '@/store/storeBranches';
 import { useLocalStorage } from '@/hook/useLocalStorage';
 import { useShallow } from 'zustand/react/shallow';
-import { JSONParse } from '@/helper';
 
 const { Header: HeaderLib } = Layout;
 const menuItems = [
@@ -58,8 +57,6 @@ function Header() {
         setStoreBranchActive: state.setStoreBranchActive
       }))
     );
-  const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
-    useLocalStorage('storeBranchActive');
 
   const storeBranchesOptions = storeBranches.map((store) => {
     return { value: store.id, label: store.name };
@@ -83,10 +80,9 @@ function Header() {
     setStoreBranchActive(storeBranchActive);
   };
 
-  const defaultValueBranchActive =
-    typeof window !== undefined
-      ? JSON.parse(storeBranchActiveLocalStorage).id
-      : undefined;
+  const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
+    useLocalStorage('storeBranchActive');
+  const defaultValueBranchActive = storeBranchActiveLocalStorage.id;
 
   return (
     <HeaderLib className='flex items-center bg-white shadow'>
