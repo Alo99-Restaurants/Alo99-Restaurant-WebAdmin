@@ -35,7 +35,7 @@ function Settings({ children }) {
         children: [
           {
             type: 'group',
-            label: 'Alo99 Chi nhánh 1',
+            label: storeBranchActive.name,
             children: [
               {
                 label: 'List',
