@@ -10,6 +10,7 @@ import {
 import useStoreBranchesStore from '@/store/storeBranches';
 import { Button, DatePicker, Form, Input, Space } from 'antd';
 import Title from 'antd/es/typography/Title';
+import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
@@ -25,19 +26,36 @@ function GeneralPage() {
 
   useEffect(() => {
     if (storeBranchActive) {
-      form.setFieldsValue(storeBranchActive);
+      form.setFieldsValue({
+        ...storeBranchActive,
+        openHours: dayjs(storeBranchActive.openHours, 'HH:mm').isValid()
+          ? dayjs(storeBranchActive.openHours, 'HH:mm')
+          : dayjs('0:0', 'HH:mm'),
+        closeHours: dayjs(storeBranchActive.closeHours, 'HH:mm').isValid()
+          ? dayjs(storeBranchActive.closeHours, 'HH:mm')
+          : dayjs('0:0', 'HH:mm')
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeBranchActive]);
 
   const onFinish = async (values) => {
-    const response = await updateRestaurantService(
-      storeBranchActive.id,
-      values
-    );
+    const openHours = `${values.openHours.hour()}:${values.openHours.minute()}`;
+    const closeHours = `${values.closeHours.hour()}:${values.closeHours.minute()}`;
+
+    const response = await updateRestaurantService(storeBranchActive.id, {
+      ...values,
+      openHours,
+      closeHours
+    });
     if (response?.data?.data) {
       addNotification('Update restaurant info successful', 'success');
-      setStoreBranchActive({ ...storeBranchActive, ...values });
+      setStoreBranchActive({
+        ...storeBranchActive,
+        ...values,
+        openHours,
+        closeHours
+      });
     }
   };
 

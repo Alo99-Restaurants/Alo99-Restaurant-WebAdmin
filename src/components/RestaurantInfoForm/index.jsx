@@ -1,7 +1,9 @@
 'use client';
-import { Button, Form, Input, Space } from 'antd';
+import { Button, Form, Input, Space, TimePicker } from 'antd';
+import dayjs from 'dayjs';
 
 function RestaurantInfoForm({ form, onFinish }) {
+  console.log('form', form);
   return (
     <Form
       layout='horizontal'
@@ -23,10 +25,13 @@ function RestaurantInfoForm({ form, onFinish }) {
         <Input />
       </Form.Item>
       <Form.Item label='Open Hours' name='openHours'>
-        <Input />
+        <TimePicker format={'HH:mm'} />
       </Form.Item>
-      <Form.Item label='Close Hours' name='closeHours'>
+      {/* <Form.Item label='Open Hours' name='openHours'>
         <Input />
+      </Form.Item> */}
+      <Form.Item label='Close Hours' name='closeHours'>
+        <TimePicker format={'HH:mm'} />
       </Form.Item>
       <Form.Item label='Phone Number' name='phoneNumber'>
         <Input />
