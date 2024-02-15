@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
 import Image from 'next/image';
 import { uploadImageService } from '@/services/upload.service';
-import {
-  deleteRestaurantImageByIdService,
-  getRestaurantImageByIdService,
-  postRestaurantImageByIdService
-} from '@/services/restaurant.service';
 import { useNotification } from '@/context/NotificationContext';
 
 const getBase64 = (file) =>
@@ -18,32 +13,13 @@ const getBase64 = (file) =>
     reader.onerror = (error) => reject(error);
   });
 
-const UploadImages = ({ idStoreBranch }) => {
+const UploadCategory = ({ onChange, fileListLength = 1 }) => {
   const { addNotification } = useNotification();
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
-  const [progress, setProgress] = useState(0);
   const [fileList, setFileList] = useState([]);
-  const fetchRestaurantImages = async (id) => {
-    const response = await getRestaurantImageByIdService(id);
-    const resImgList = response?.data?.items ?? [];
-    const imgList = resImgList.map((item) => {
-      return {
-        uid: item.id,
-        name: item.name,
-        url: item.url
-      };
-    });
-    setFileList(imgList);
-  };
-
-  useEffect(() => {
-    if (idStoreBranch) {
-      fetchRestaurantImages(idStoreBranch);
-    }
-  }, [idStoreBranch]);
 
   const handleCancel = () => setPreviewOpen(false);
   const handlePreview = async (file) => {
@@ -88,16 +64,11 @@ const UploadImages = ({ idStoreBranch }) => {
     try {
       const resUpload = await uploadImageService(fmData, config);
       const imgURL = resUpload?.data?.data;
+      onChange(imgURL); // save icon url to form value
       onSuccess('Ok');
-      const resPostImg = await postRestaurantImageByIdService(
-        idStoreBranch,
-        imgURL
-      );
-      if (resPostImg?.data?.data) {
-        addNotification('Upload restaurant image successful', 'success');
-      }
     } catch (err) {
       console.log('Error: ', err);
+      onChange('');
       const newError = new Error('Can not upload image error');
       onError({ newError });
       addNotification(newError, 'error');
@@ -105,19 +76,6 @@ const UploadImages = ({ idStoreBranch }) => {
     }
   };
 
-  const handleRemove = async (file) => {
-    try {
-      if (!file.uid) throw new Error('Image invalid');
-      const response = await deleteRestaurantImageByIdService(file.uid);
-      console.log('response delete image', response);
-      if (response?.data?.data) {
-        addNotification('Delete restaurant image successful', 'success');
-      }
-    } catch (error) {
-        addNotification('Delete restaurant image error', 'error');
-        return false;
-    }
-  };
   return (
     <>
       <Upload
@@ -126,9 +84,8 @@ const UploadImages = ({ idStoreBranch }) => {
         listType='picture-card'
         fileList={fileList}
         onPreview={handlePreview}
-        onRemove={handleRemove}
         onChange={handleChange}>
-        {fileList.length >= 8 ? null : uploadButton}
+        {fileList.length >= fileListLength ? null : uploadButton}
       </Upload>
       <Modal
         width={800}
@@ -150,4 +107,4 @@ const UploadImages = ({ idStoreBranch }) => {
     </>
   );
 };
-export default UploadImages;
+export default UploadCategory;

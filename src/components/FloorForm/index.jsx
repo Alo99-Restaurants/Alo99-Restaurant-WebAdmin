@@ -11,8 +11,8 @@ function FloorForm({ form, onFinish }) {
         capacity: 10
       }}
       onFinish={onFinish}
-      labelCol={{ span: 4 }}
-      wrapperCol={{ span: 19 }}
+      labelCol={{ span: 8 }}
+      wrapperCol={{ span: 20 }}
       style={{ maxWidth: '100%' }}>
       <Form.Item label='Name' name='name'>
         <Input placeholder='name of floor' required />

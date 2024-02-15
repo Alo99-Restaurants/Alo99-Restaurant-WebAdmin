@@ -30,37 +30,24 @@ function Settings({ children }) {
         key: 'settings/general'
       },
       {
-        label: 'Floor setting',
-        key: '',
-        children: [
-          {
-            type: 'group',
-            label: storeBranchActive.name,
-            children: [
-              {
-                label: 'List',
-                key: 'settings/floor'
-              },
-              {
-                label: 'Add new',
-                key: 'settings/floor/create'
-              }
-            ]
-          }
-        ]
+        label: 'Category',
+        key: 'settings/category'
       },
       {
-        label: 'Setting option 2',
-        key: 'settings/option2',
-        disabled: true
+        label: 'Menu',
+        key: 'settings/menu'
       },
       {
-        label: 'Change table layout',
+        label: 'Floor',
+        key: 'settings/floor'
+      },
+      {
+        label: 'Table layout',
         key: 'settings/option3',
         children: [
           {
             type: 'group',
-            label: 'Alo99 Chi nhánh 1',
+            label: storeBranchActive?.name,
             children: restaurantFloorsOptions ?? []
           }
         ]

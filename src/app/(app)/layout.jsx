@@ -37,12 +37,11 @@ const AdminLayout = ({ children }) => {
   const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
     useLocalStorage('storeBranchActive');
 
-  const storeBranchActiveId = storeBranchActiveLocalStorage.id;
+  const storeBranchActiveId = storeBranchActiveLocalStorage?.id ?? 0;
 
   const [storeBranches, setStoreBranches] = useState();
 
   useEffect(() => {
-    console.log('fetchDataRestaurantStore---------------', isUpdate);
     const fetchDataRestaurantStore = async () => {
       try {
         const response = await getRestaurantService();
