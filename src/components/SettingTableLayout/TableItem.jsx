@@ -7,7 +7,7 @@ function TableItem(props) {
   const [active, setActive] = useState(false);
 
   const {
-    item: { id, type, position },
+    item: { id, type, position, height, width},
     handelChangePosition,
     handelRemoveItem,
     isDelete
@@ -27,13 +27,13 @@ function TableItem(props) {
   const memoizedClassName = useMemo(() => {
     function classNameTableItem(type) {
       if (type === TABLE_TYPE.TWO_SEATS) {
-        return 'absolute bg-orange-500 h-[100px] w-[100px] cursor-pointer select-none';
+        return 'absolute bg-orange-500 cursor-pointer select-none';
       } else if (type === TABLE_TYPE.THREE_SEATS) {
-        return 'absolute bg-green-500 h-[100px] w-[100px] cursor-pointer select-none';
+        return 'absolute bg-green-500 cursor-pointer select-none';
       } else if (type === TABLE_TYPE.FOUR_SEATS) {
-        return 'absolute bg-blue-500 h-[100px] w-[100px] cursor-pointer select-none';
+        return 'absolute bg-blue-500 cursor-pointer select-none';
       }
-      return '';
+      return 'absolute bg-red-500 cursor-pointer select-none';
     }
     return classNameTableItem(type);
   }, [type]);
@@ -48,8 +48,8 @@ function TableItem(props) {
       id={id}
       ref={boxRef}
       className={memoizedClassName}
-      onClick={() => setActive(!active)}
-      style={memoizedInitialStyle}>
+      style={{ width: width, height: height, ...memoizedInitialStyle }}
+      onClick={() => setActive(!active)}>
       {isDelete && (
         <div
           onClick={() => {

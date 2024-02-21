@@ -4,12 +4,9 @@ import { useEffect, useState } from 'react';
 import { getMenuCategory } from '@/services/category.service';
 import { MENU } from '@/constants';
 
-function MenuForm({ form, onFinish }) {
+function MenuForm({ form, onFinish, isEdit }) {
   const { Option } = Select;
-  const [iconUrl, setIconUrl] = useState('');
   const [menuCategories, setMenuCategories] = useState([]);
-
-  console.log('menuCategories', menuCategories);
 
   const fetchMenuCategory = async () => {
     try {
@@ -27,24 +24,8 @@ function MenuForm({ form, onFinish }) {
     fetchMenuCategory();
   }, []);
 
-  const onGenderChange = (value) => {
-    switch (value) {
-      case 'male':
-        form.setFieldsValue({ note: 'Hi, man!' });
-        break;
-      case 'female':
-        form.setFieldsValue({ note: 'Hi, lady!' });
-        break;
-      case 'other':
-        form.setFieldsValue({ note: 'Hi there!' });
-        break;
-      default:
-    }
-  };
-
   const handleIconChange = (url) => {
-    setIconUrl(url);
-    form.setFieldsValue({ iconUrl: url });
+    form.setFieldsValue({ menuUrl: url });
   };
 
   return (
@@ -57,8 +38,11 @@ function MenuForm({ form, onFinish }) {
       <Form.Item label='Name' name='name' rules={[{ required: true }]}>
         <Input placeholder='name of food' />
       </Form.Item>
-      <Form.Item label='Category' name='category' rules={[{ required: true }]}>
-        <Select placeholder='select a category' onChange={onGenderChange}>
+      <Form.Item
+        label='Category'
+        name='menuCategoryId'
+        rules={[{ required: true }]}>
+        <Select placeholder='select a category'>
           {menuCategories.map((category) => (
             <Option key={category.id} value={category.id}>
               {category.name}
@@ -74,7 +58,7 @@ function MenuForm({ form, onFinish }) {
         <Input.TextArea />
       </Form.Item>
       <Form.Item label='Unit Type' name='unitType' rules={[{ required: true }]}>
-        <Select placeholder='select a unit type' onChange={onGenderChange}>
+        <Select placeholder='select a unit type'>
           {Object.values(MENU.unitType).map((value) => (
             <Option key={value} value={value}>
               {value}
@@ -82,14 +66,22 @@ function MenuForm({ form, onFinish }) {
           ))}
         </Select>
       </Form.Item>
-      <Form.Item label='Icon' name='iconUrl' rules={[{ required: true, message: "'icon' is required"  }]}>
+      <Form.Item label='Price' name='price' rules={[{ required: true }]}>
+        <InputNumber />
+      </Form.Item>
+      <Form.Item
+        label='Icon'
+        name='menuUrl'
+        rules={[{ required: true, message: "'icon' is required" }]}>
         <UploadCategory onChange={handleIconChange} />
       </Form.Item>
-      <Form.Item className='flex justify-center'>
-        <Button type='primary' htmlType='submit'>
-          Add
-        </Button>
-      </Form.Item>
+      { !isEdit &&
+        <Form.Item className='flex justify-center'>
+          <Button type='primary' htmlType='submit'>
+            Add
+          </Button>
+        </Form.Item>
+      }
     </Form>
   );
 }

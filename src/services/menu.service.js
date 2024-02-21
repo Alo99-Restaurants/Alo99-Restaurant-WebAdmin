@@ -20,9 +20,9 @@ export async function postRestaurantMenu(payload) {
   }
 }
 
-export async function putRestaurantMenu(payload) {
+export async function putRestaurantMenu(id, payload) {
   try {
-    const response = await baseAPI.put('/api/RestaurantMenu', payload);
+    const response = await baseAPI.put(`/api/RestaurantMenu/${id}`, payload);
     return response;
   } catch (error) {
     console.error('Put RestaurantMenu Service Error', error);

@@ -10,7 +10,11 @@ import { v4 as uuidv4 } from 'uuid';
 const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
   const { addNotification } = useNotification();
   const [typeBox, setTypeBox] = useState(2);
+  const [direction, setDirection] = useState('horizontal');
   const [listBox, setListBox] = useState(floorTables ?? []);
+
+
+  const ratioMap = 1000/700;
 
   useEffect(() => {
     setListBox(floorTables);
@@ -83,9 +87,22 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
               value={typeBox}
               onChange={handleChangeSelect}
               options={[
-                { value: 2, label: 'Bàn 2' },
-                { value: 3, label: 'Bàn 3' },
-                { value: 4, label: 'Bàn 4' }
+                { value: 2, label: 'Bàn 2 người' },
+                { value: 4, label: 'Bàn 4 người' },
+                { value: 6, label: 'Bàn 6 người' },
+                { value: 8, label: 'Bàn 8 người' },
+                { value: 10, label: 'Bàn 10 người' },
+                { value: 12, label: 'Bàn 12 người' }
+              ]}
+            />
+            <Select
+              defaultValue={0}
+              className='me-2 mb-2'
+              value={direction}
+              onChange={(direction) => setDirection(direction)}
+              options={[
+                { value: 'horizontal', label: 'Horizontal' },
+                { value: 'vertical', label: 'Vertical' }
               ]}
             />
             <button
@@ -95,8 +112,10 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
                   ...listBox,
                   {
                     id: uuidv4(),
-                    width: 100,
-                    height: 100,
+                    width:
+                      direction === 'horizontal' ? 50 * Number(typeBox) : 100,
+                    height:
+                      direction !== 'horizontal' ? 50 * Number(typeBox) : 100,
                     type: typeBox,
                     position: { x: 0, y: 0 }
                   }
