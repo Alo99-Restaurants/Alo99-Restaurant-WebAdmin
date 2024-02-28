@@ -2,7 +2,7 @@ import { Button, Form, Input, InputNumber } from 'antd';
 import UploadCategory from '../UploadCategory';
 import { useState } from 'react';
 
-function CategoryForm({ form, onFinish }) {
+function CategoryForm({ form, onFinish, isEdit = false }) {
   const [iconUrl, setIconUrl] = useState('');
 
   const handleIconChange = (url) => {
@@ -23,11 +23,13 @@ function CategoryForm({ form, onFinish }) {
       <Form.Item label='Icon' name='iconUrl'>
         <UploadCategory onChange={handleIconChange} />
       </Form.Item>
-      <Form.Item className='flex justify-center'>
-        <Button type='primary' htmlType='submit'>
-          Add
-        </Button>
-      </Form.Item>
+      {!isEdit && (
+        <Form.Item className='flex justify-center'>
+          <Button type='primary' htmlType='submit'>
+            Add
+          </Button>
+        </Form.Item>
+      )}
     </Form>
   );
 }

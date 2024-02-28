@@ -8,8 +8,14 @@ import { useEffect, useState } from 'react';
 import { Form } from 'antd';
 import Title from 'antd/es/typography/Title';
 import CategoryForm from '@/components/CategoryForm';
-import { deleteMenuCategory, getMenuCategory, postMenuCategory } from '@/services/category.service';
+import {
+  deleteMenuCategory,
+  getMenuCategory,
+  postMenuCategory,
+  putMenuCategory
+} from '@/services/category.service';
 import { IMAGE } from '@/constants';
+import PrimaryModal from '@/components/shared/PrimaryModal';
 
 function CategoryPage() {
   const { addNotification } = useNotification();
@@ -18,13 +24,30 @@ function CategoryPage() {
   );
   const [form] = Form.useForm();
   const [menuCategories, setMenuCategories] = useState([]);
-
+  const [isOpenModal, setIsOpenModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null); // Add state to store selected menu item
   const onFinish = async (values) => {
     const payload = values;
     const response = await postMenuCategory(payload);
     if (response?.data?.data) {
       addNotification('Add new category successful', 'success');
       fetchMenuCategory();
+    }
+  };
+
+  const handleEditMenuCategory = (record) => {
+    form.setFieldsValue(record);
+    setSelectedCategory(record); // Set selected menu item
+    setIsOpenModal(true);
+  };
+
+  const handleEditRestaurantMenuCategory = async (id, values) => {
+    console.log('id', id);
+    const payload = values;
+    const response = await putMenuCategory(id, payload);
+    if (response?.data?.data) {
+      addNotification('Edit new category successful', 'success');
+      fetchRestaurantMenu();
     }
   };
 
@@ -35,6 +58,7 @@ function CategoryPage() {
       fetchMenuCategory();
     }
   };
+
   const fetchMenuCategory = async () => {
     try {
       const response = await getMenuCategory();
@@ -81,7 +105,10 @@ function CategoryPage() {
       dataIndex: 'action',
       render: (_, record) => (
         <Space size='middle'>
-          <Button type='primary' className='bg-[#4096ff]'>
+          <Button
+            type='primary'
+            className='bg-[#4096ff]'
+            onClick={() => handleEditMenuCategory(record)}>
             Edit
           </Button>
           <Button
@@ -124,10 +151,25 @@ function CategoryPage() {
 
   return (
     <div className='p-2 h-full overflow-y-auto '>
+      <PrimaryModal
+        onOk={() =>
+          handleEditRestaurantMenuCategory(
+            selectedCategory?.id,
+            form.getFieldsValue()
+          )
+        }
+        isOpen={isOpenModal}
+        onCancel={() => {
+          form.resetFields(); // Clean up form values when modal is closed
+          setIsOpenModal(false);
+        }}
+        title={'Edit Category'}
+        width={1000}>
+        <CategoryForm isEdit={true} form={form} onFinish={onFinish} />
+      </PrimaryModal>
       <Collapse items={items} defaultActiveKey={['2']} />
     </div>
   );
 }
 
 export default CategoryPage;
-

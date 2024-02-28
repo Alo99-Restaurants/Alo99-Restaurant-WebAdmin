@@ -58,3 +58,37 @@ export function JSONParse(jsonString) {
     return {};
   }
 }
+
+export const buildQueryString = (params) => {
+  let queryString = '?';
+  for (const [key, value] of Object.entries(params)) {
+    if (Array.isArray(value)) {
+      value.forEach((item) => {
+        queryString += `${key}=${item}&`;
+      });
+    } else {
+      queryString += `${key}=${value}&`;
+    }
+  }
+  return queryString.slice(0, -1); // Remove the last '&' character
+};
+
+export function convertToUSDateTime(dateTimeString) {
+  const dateTime = new Date(dateTimeString);
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+  return dateTime.toLocaleString('en-US', options);
+}
+
+export function sortByModifiedDate(array, sortOrder = 'desc') {
+  return array.sort((a, b) => {
+    const dateA = new Date(a.modifiedDate);
+    const dateB = new Date(b.modifiedDate);
+    let result = dateA - dateB;
+
+    if (sortOrder === 'asc') {
+      result *= -1;
+    }
+
+    return result;
+  });
+}

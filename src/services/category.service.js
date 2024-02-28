@@ -21,9 +21,9 @@ export async function postMenuCategory(payload) {
   }
 }
 
-export async function putMenuCategory(payload) {
+export async function putMenuCategory(id, payload) {
   try {
-    const response = await baseAPI.put('/api/MenuCategory', payload);
+    const response = await baseAPI.put(`/api/MenuCategory/${id}`, payload);
     return response;
   } catch (error) {
     console.error('Put MenuCategory Service Error', error);
