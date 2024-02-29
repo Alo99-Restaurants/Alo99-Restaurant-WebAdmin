@@ -92,3 +92,11 @@ export function sortByModifiedDate(array, sortOrder = 'desc') {
     return result;
   });
 }
+
+export const convertPrice = (price) => {
+  if (!price) return '0 vnd';
+  return price
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+    .concat(' vnd');
+};

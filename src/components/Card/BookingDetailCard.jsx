@@ -1,11 +1,14 @@
-import { convertToUSDateTime } from '@/helper';
+import { convertPrice, convertToUSDateTime } from '@/helper';
+import { getBookingMenuService } from '@/services/restaurant.booking.service';
 import useStoreBranchesStore from '@/store/storeBranches';
 import { Card } from 'antd';
-import React from 'react'
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 function BookingDetailCard({ bookingActive, colorStatus }) {
   const { bookingDetail } = bookingActive;
+  const [menuOrdered, setMenuOrdered] = useState([]);
 
   const { storeBranchActive, storeBranches } = useStoreBranchesStore(
     useShallow((state) => ({
@@ -14,29 +17,25 @@ function BookingDetailCard({ bookingActive, colorStatus }) {
     }))
   );
   const restaurantFloors = storeBranchActive.restaurantFloors;
-  console.log('restaurantFloors', restaurantFloors);
 
-  // useEffect(() => {
-  //   const fetchBookingDetailById = (id) => {
-  //     getBookingByIdService(id)
-  //       .then((response) => {
-  //         const dataBooingDetail = response?.data?.data;
-  //         setBookingActive({
-  //           bookingDetail: dataBooingDetail
-  //         });
-  //         console.log('Booking Service By Id Response', dataBooingDetail);
-  //       })
-  //       .catch((error) => {
-  //         console.error('Error fetching Booking Detail Service', error);
-  //       });
-  //   };
-  //   if (bookingIdSelected) {
-  //     fetchBookingDetailById(bookingIdSelected);
-  //   }
-  // }, [bookingIdSelected]);
+  useEffect(() => {
+    const fetchBookingMenuById = async (id) => {
+      try {
+        const responseBookingMenuById = await getBookingMenuService({
+          BookingId: id
+        });
+        const menuOrdered = responseBookingMenuById.data.items;
+        setMenuOrdered(menuOrdered);
+      } catch (error) {}
+    };
+
+    if (bookingDetail?.id) {
+      fetchBookingMenuById(bookingDetail.id);
+    }
+  }, [bookingDetail?.id]);
 
   return (
-    <Card title='Booking Information' className='p-4 h-full'>
+    <div className='h-full text-lg px-6 overflow-y-auto'>
       <p>
         <strong>Booking ID: </strong>
         {bookingDetail?.id}
@@ -93,8 +92,43 @@ function BookingDetailCard({ bookingActive, colorStatus }) {
       <div className='text-lg mt-10 mb-2'>
         <strong>Food information has been ordered:</strong>
       </div>
-    </Card>
+      {menuOrdered.map((menu) => {
+        return (
+          <div className='flex items-center pl-10 py-2 gap-4' key={menu.id}>
+            <span> ● </span>
+            <div className='w-16 h-16 relative object-cover'>
+              <Image
+                fill={true}
+                loader={() => menu.restaurantMenu.menuUrl}
+                src={menu.restaurantMenu.menuUrl}
+                alt='restaurant image'
+              />
+            </div>
+            <span> x {menu.quantity}</span>
+            <span>
+              <strong>{menu.restaurantMenu.name}</strong>
+            </span>
+            <span>
+              = {convertPrice(Number(menu.quantity) * Number(menu.price))}
+            </span>
+          </div>
+        );
+      })}
+      <div className='py-2'>
+        <strong>
+          {`Total Price: 
+          ${convertPrice(
+            menuOrdered.reduce(
+              (accumulator, currentValue) =>
+                accumulator +
+                Number(currentValue.quantity) * Number(currentValue.price),
+              0
+            )
+          )}`}
+        </strong>
+      </div>
+    </div>
   );
 }
 
-export default BookingDetailCard
+export default BookingDetailCard;

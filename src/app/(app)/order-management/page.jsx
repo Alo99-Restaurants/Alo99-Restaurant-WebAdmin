@@ -1,23 +1,16 @@
 'use client';
 import BookingCard from '@/components/Card/BookingCard';
 import BookingDetailCard from '@/components/Card/BookingDetailCard';
-import { convertToUSDateTime, sortByModifiedDate } from '@/helper';
+import { sortByModifiedDate } from '@/helper';
 import {
   getBookingByIdService,
-  getBookingService
+  getBookingService,
+  updateStatusBookingService
 } from '@/services/restaurant.booking.service';
 import useStoreBranchesStore from '@/store/storeBranches';
-import {
-  CloseOutlined,
-  EllipsisOutlined,
-  CheckOutlined,
-  CopyOutlined,
-  UserOutlined,
-  BorderOutlined
-} from '@ant-design/icons';
-import { Card, DatePicker, Select, Tag } from 'antd';
+import { DatePicker, Select, Tag } from 'antd';
 import dayjs from 'dayjs';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 
 function OrderManagement() {
@@ -36,6 +29,8 @@ function OrderManagement() {
   const [bookingIdSelected, setBookingIdSelected] = useState();
   const [bookingActive, setBookingActive] = useState({});
 
+  const [isBookingStatusUpdated, setIsBookingStatusUpdated] = useState(false);
+
   // console.log('storeBranchActive', storeBranchActive);
   // console.log('bookingQueries', bookingQueries);
 
@@ -49,6 +44,7 @@ function OrderManagement() {
       });
   }, [storeBranchActive]);
 
+  // Auto recall API after 5s
   useEffect(() => {
     const fetchBookingData = (payload) => {
       getBookingService(payload)
@@ -58,11 +54,25 @@ function OrderManagement() {
         })
         .catch((error) => {
           console.error('Error fetching Booking Service', error);
+        })
+        .finally(() => {
+          setIsBookingStatusUpdated(false);
         });
     };
 
-    if (bookingQueries.RestaurantId) fetchBookingData(bookingQueries);
-  }, [bookingQueries]);
+    if (bookingQueries.RestaurantId) {
+      fetchBookingData(bookingQueries);
+    }
+
+    const fetchDataInterval = setInterval(() => {
+      if (bookingQueries.RestaurantId) {
+        fetchBookingData(bookingQueries);
+      }
+    }, 10000); // 10s
+
+    return () => clearInterval(fetchDataInterval);
+  }, [bookingQueries, isBookingStatusUpdated]);
+
 
   useEffect(() => {
     const fetchBookingDetailById = (id) => {
@@ -76,12 +86,15 @@ function OrderManagement() {
         })
         .catch((error) => {
           console.error('Error fetching Booking Detail Service', error);
+        })
+        .finally(() => {
+          setIsBookingStatusUpdated(false);
         });
     };
     if (bookingIdSelected) {
       fetchBookingDetailById(bookingIdSelected);
     }
-  }, [bookingIdSelected]);
+  }, [bookingIdSelected, isBookingStatusUpdated]);
 
   const handleChangeDateFilter = (date, dateString) => {
     if (!dateString) {
@@ -108,6 +121,20 @@ function OrderManagement() {
         ...prev,
         BookingStatus: status
       }));
+    }
+  };
+
+  const handleUpdateStatusBooking = async (bookingId, newStatus) => {
+    const payload = {
+      bookingIds: [bookingId],
+      bookingStatus: newStatus
+    };
+    try {
+      const response = await updateStatusBookingService(payload);
+      console.log('updateStatusBookingService', response);
+      setIsBookingStatusUpdated(true);
+    } catch (error) {
+      console.error('Error Update Booking Status Service', error);
     }
   };
 
@@ -170,8 +197,8 @@ function OrderManagement() {
                 { value: 'New', label: 'New' },
                 { value: 'Confirm', label: 'Confirm' },
                 { value: 'Using', label: 'Using' },
-                { value: 'Cancelled', label: 'Cancelled' },
-                { value: 'Completed', label: 'Completed' }
+                { value: 'Completed', label: 'Completed' },
+                { value: 'Cancelled', label: 'Cancelled' }
               ]}
             />
           </div>
@@ -183,6 +210,7 @@ function OrderManagement() {
             <BookingCard
               key={booking.id}
               isActive={booking.id === bookingIdSelected}
+              onUpdateStatusBooking={handleUpdateStatusBooking}
               onSelected={setBookingIdSelected}
               colorStatus={colorRenderWithStatus(booking.bookingStatusId)}
               booking={booking}
@@ -190,7 +218,7 @@ function OrderManagement() {
           ))}
         </div>
         <div className='flex-[2] w-full'>
-          {bookingActive?.bookingDetail && (
+          {bookingData?.length > 0 && bookingActive?.bookingDetail && (
             <BookingDetailCard
               bookingActive={bookingActive}
               colorStatus={colorRenderWithStatus(

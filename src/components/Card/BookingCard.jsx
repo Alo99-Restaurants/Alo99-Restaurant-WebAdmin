@@ -9,8 +9,132 @@ import {
 } from '@ant-design/icons';
 import { Card } from 'antd';
 
-function BookingCard({ booking, isActive, colorStatus, onSelected }) {
+function BookingCard({
+  booking,
+  isActive,
+  colorStatus,
+  onSelected,
+  onUpdateStatusBooking
+}) {
   const borderColor = isActive ? '2px solid red' : '';
+
+  const handleClickChangeStatus = (status) => {
+    onUpdateStatusBooking(booking.id, status);
+  };
+
+  const renderActionBtn = () => {
+    let actionButtons = [];
+
+    if (booking.bookingStatusId === 'New') {
+      actionButtons = [
+        <div
+          key='Confirm'
+          className='text-lg font-bold text-[#2db7f5]'
+          onClick={() => handleClickChangeStatus('Confirm')}>
+          Confirm
+        </div>,
+        <div
+          key='Cancelled'
+          className='text-lg font-bold text-red-600'
+          onClick={() => handleClickChangeStatus('Cancelled')}>
+          Cancel
+        </div>
+      ];
+    } else if (booking.bookingStatusId === 'Confirm') {
+      actionButtons = [
+        <div
+          key='New'
+          className='text-lg font-bold text-[#4bae4b]'
+          onClick={() => handleClickChangeStatus('New')}>
+          New
+        </div>,
+        <div
+          key='Using'
+          className='text-lg font-bold text-gray-500'
+          onClick={() => handleClickChangeStatus('Using')}>
+          Using
+        </div>,
+        <div
+          key='Completed'
+          className='text-lg font-bold text-purple-600'
+          onClick={() => handleClickChangeStatus('Completed')}>
+          Complete
+        </div>,
+        <div
+          key='Cancelled'
+          className='text-lg font-bold text-red-600'
+          onClick={() => handleClickChangeStatus('Cancelled')}>
+          Cancel
+        </div>
+      ];
+    } else if (booking.bookingStatusId === 'Using') {
+      actionButtons = [
+        <div
+          key='Confirm'
+          className='text-lg font-bold text-[#2db7f5]'
+          onClick={() => handleClickChangeStatus('Confirm')}>
+          Confirm
+        </div>,
+        <div
+          key='Completed'
+          className='text-lg font-bold text-purple-600'
+          onClick={() => handleClickChangeStatus('Completed')}>
+          Complete
+        </div>,
+        <div
+          key='Cancelled'
+          className='text-lg font-bold text-red-600'
+          onClick={() => handleClickChangeStatus('Cancelled')}>
+          Cancel
+        </div>
+      ];
+    } else if (booking.bookingStatusId === 'Completed') {
+      actionButtons = [
+        <div
+          key='Using'
+          className='text-lg font-bold text-gray-500'
+          onClick={() => handleClickChangeStatus('Using')}>
+          Using
+        </div>,
+        <div
+          key='Cancelled'
+          className='text-lg font-bold text-red-600'
+          onClick={() => handleClickChangeStatus('Cancelled')}>
+          Cancel
+        </div>
+      ];
+    } else if (booking.bookingStatusId === 'Cancelled') {
+      actionButtons = [
+        <div
+          key='New'
+          className='text-lg font-bold text-[#4bae4b]'
+          onClick={() => handleClickChangeStatus('New')}>
+          New
+        </div>,
+        <div
+          key='Confirm'
+          className='text-lg font-bold text-[#2db7f5]'
+          onClick={() => handleClickChangeStatus('Confirm')}>
+          Confirm
+        </div>,
+        <div
+          key='Using'
+          className='text-lg font-bold text-gray-500'
+          onClick={() => handleClickChangeStatus('Using')}>
+          Using
+        </div>,
+        <div
+          key='Completed'
+          className='text-lg font-bold text-purple-600'
+          onClick={() => handleClickChangeStatus('Completed')}>
+          Complete
+        </div>
+      ];
+    }
+
+    return actionButtons;
+  };
+
   return (
     <Card
       title={convertToUSDateTime(booking.bookingDate)}
@@ -18,10 +142,7 @@ function BookingCard({ booking, isActive, colorStatus, onSelected }) {
       bordered={true}
       className={`w-full shadow-md my-4`}
       style={{ border: borderColor }}
-      actions={[
-        <CheckOutlined key='confirm' className='text-lg font-black' />,
-        <CloseOutlined key='close' className='text-lg font-black' />
-      ]}>
+      actions={renderActionBtn()}>
       <div
         className='cursor-pointer -m-6'
         onClick={() => onSelected(booking.id)}>

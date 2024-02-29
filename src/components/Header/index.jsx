@@ -58,6 +58,9 @@ function Header() {
       }))
     );
 
+  const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
+    useLocalStorage('storeBranchActive');
+
   const storeBranchesOptions = storeBranches.map((store) => {
     return { value: store.id, label: store.name };
   });
@@ -76,13 +79,11 @@ function Header() {
     const storeBranchActive = storeBranches.find(
       (branch) => branch.id === value
     );
-    setStoreBranchActiveLocalStorage(JSON.stringify(storeBranchActive));
+    setStoreBranchActiveLocalStorage(storeBranchActive);
     setStoreBranchActive(storeBranchActive);
   };
 
-  const [storeBranchActiveLocalStorage, setStoreBranchActiveLocalStorage] =
-    useLocalStorage('storeBranchActive');
-  const defaultValueBranchActive = storeBranchActiveLocalStorage.id;
+  const defaultValueBranchActive = storeBranchActive.id;
 
   return (
     <HeaderLib className='flex items-center bg-white shadow'>
