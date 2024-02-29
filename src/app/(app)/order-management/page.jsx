@@ -82,7 +82,6 @@ function OrderManagement() {
           setBookingActive({
             bookingDetail: dataBooingDetail
           });
-          console.log('Booking Service By Id Response', dataBooingDetail);
         })
         .catch((error) => {
           console.error('Error fetching Booking Detail Service', error);
@@ -131,7 +130,6 @@ function OrderManagement() {
     };
     try {
       const response = await updateStatusBookingService(payload);
-      console.log('updateStatusBookingService', response);
       setIsBookingStatusUpdated(true);
     } catch (error) {
       console.error('Error Update Booking Status Service', error);

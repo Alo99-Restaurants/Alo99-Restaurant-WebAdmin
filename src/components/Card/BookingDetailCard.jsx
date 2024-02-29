@@ -1,7 +1,8 @@
 import { convertPrice, convertToUSDateTime } from '@/helper';
+import { getCustomerInfoService } from '@/services/customner.service';
 import { getBookingMenuService } from '@/services/restaurant.booking.service';
 import useStoreBranchesStore from '@/store/storeBranches';
-import { Card } from 'antd';
+import { Card, Divider } from 'antd';
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
@@ -9,6 +10,7 @@ import { useShallow } from 'zustand/react/shallow';
 function BookingDetailCard({ bookingActive, colorStatus }) {
   const { bookingDetail } = bookingActive;
   const [menuOrdered, setMenuOrdered] = useState([]);
+  const [customerInfo, setCustomerInfo] = useState({});
 
   const { storeBranchActive, storeBranches } = useStoreBranchesStore(
     useShallow((state) => ({
@@ -24,7 +26,7 @@ function BookingDetailCard({ bookingActive, colorStatus }) {
         const responseBookingMenuById = await getBookingMenuService({
           BookingId: id
         });
-        const menuOrdered = responseBookingMenuById.data.items;
+        const menuOrdered = responseBookingMenuById.data?.items;
         setMenuOrdered(menuOrdered);
       } catch (error) {}
     };
@@ -32,11 +34,60 @@ function BookingDetailCard({ bookingActive, colorStatus }) {
     if (bookingDetail?.id) {
       fetchBookingMenuById(bookingDetail.id);
     }
+    const fetchDataInterval = setInterval(() => {
+      if (bookingDetail?.id) {
+        fetchBookingMenuById(bookingDetail?.id);
+      }
+    }, 10000); // 10s
+
+    return () => clearInterval(fetchDataInterval);
   }, [bookingDetail?.id]);
+
+    useEffect(() => {
+      const fetchCustomerInfoById = async (id) => {
+        try {
+          const response = await getCustomerInfoService(id);
+          const customerInfo = response.data?.data;
+          setCustomerInfo(customerInfo);
+        } catch (error) {}
+      };
+
+      if (bookingDetail?.customerId) {
+        fetchCustomerInfoById(bookingDetail?.customerId);
+      }
+    }, [bookingDetail?.customerId]);
 
   return (
     <div className='h-full text-lg px-6 overflow-y-auto'>
       <p>
+        <strong>Customer ID: </strong>
+        {bookingDetail?.customerId}
+      </p>
+      <div className='pl-10'>
+        <span> ➤ </span>
+        <span>
+          <strong>Full Name: </strong>
+          {customerInfo?.name}
+        </span>
+      </div>
+      <div className='pl-10'>
+        <span> ➤ </span>
+        <span>
+          <strong>Phone: </strong>
+          {customerInfo?.phoneNumber}
+        </span>
+      </div>
+      <div className='pl-10'>
+        <span> ➤ </span>
+        <span>
+          <strong>Email: </strong>
+          {customerInfo?.email}
+        </span>
+      </div>
+
+      <Divider />
+
+      <p className='mt-10'>
         <strong>Booking ID: </strong>
         {bookingDetail?.id}
       </p>
@@ -58,6 +109,8 @@ function BookingDetailCard({ bookingActive, colorStatus }) {
         {bookingDetail?.note}
       </p>
 
+      <Divider />
+
       {/* Table info */}
       <div className='text-lg mt-10 mb-2'>
         <strong>Table information has been booked:</strong>
@@ -69,7 +122,7 @@ function BookingDetailCard({ bookingActive, colorStatus }) {
           );
           return (
             <div className='pl-10' key={table.id}>
-              <span> ● </span>
+              <span> ➤ </span>
               <span>
                 <strong>Table Name: </strong>Bàn số {index + 1}
               </span>
@@ -88,6 +141,8 @@ function BookingDetailCard({ bookingActive, colorStatus }) {
         })}
       </div>
 
+      <Divider />
+
       {/* Food info */}
       <div className='text-lg mt-10 mb-2'>
         <strong>Food information has been ordered:</strong>
@@ -95,7 +150,7 @@ function BookingDetailCard({ bookingActive, colorStatus }) {
       {menuOrdered.map((menu) => {
         return (
           <div className='flex items-center pl-10 py-2 gap-4' key={menu.id}>
-            <span> ● </span>
+            <span> ➤ </span>
             <div className='w-16 h-16 relative object-cover'>
               <Image
                 fill={true}

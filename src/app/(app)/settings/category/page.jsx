@@ -47,7 +47,7 @@ function CategoryPage() {
     const response = await putMenuCategory(id, payload);
     if (response?.data?.data) {
       addNotification('Edit new category successful', 'success');
-      fetchRestaurantMenu();
+      fetchMenuCategory();
     }
   };
 
@@ -71,7 +71,7 @@ function CategoryPage() {
     }
   };
 
-  useEffect(() => {
+  useEffect(() => {``
     fetchMenuCategory();
   }, []);
 
