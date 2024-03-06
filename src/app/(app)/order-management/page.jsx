@@ -1,7 +1,7 @@
 'use client';
 import BookingCard from '@/components/Card/BookingCard';
 import BookingDetailCard from '@/components/Card/BookingDetailCard';
-import { sortByModifiedDate } from '@/helper';
+import { sortByField } from '@/helper';
 import {
   getBookingByIdService,
   getBookingService,
@@ -25,7 +25,8 @@ function OrderManagement() {
     RestaurantId: storeBranchActive.id,
     BookingDate: dayjs().format('YYYY-MM-DD')
   });
-
+  const [sortDirection, setSortDirection] = useState('asc');
+  const [sortByFieldValue, setSortByFieldValue] = useState('modifiedDate');
   const [bookingIdSelected, setBookingIdSelected] = useState();
   const [bookingActive, setBookingActive] = useState({});
 
@@ -49,7 +50,11 @@ function OrderManagement() {
     const fetchBookingData = (payload) => {
       getBookingService(payload)
         .then((response) => {
-          const dataBooing = sortByModifiedDate(response?.data?.items, 'asc');
+          const dataBooing = sortByField(
+            response?.data?.items,
+            sortByFieldValue,
+            sortDirection
+          );
           setBookingData(dataBooing);
         })
         .catch((error) => {
@@ -71,7 +76,7 @@ function OrderManagement() {
     }, 10000); // 10s
 
     return () => clearInterval(fetchDataInterval);
-  }, [bookingQueries, isBookingStatusUpdated]);
+  }, [bookingQueries, isBookingStatusUpdated, sortByFieldValue, sortDirection]);
 
 
   useEffect(() => {
@@ -197,6 +202,41 @@ function OrderManagement() {
                 { value: 'Using', label: 'Using' },
                 { value: 'Completed', label: 'Completed' },
                 { value: 'Cancelled', label: 'Cancelled' }
+              ]}
+            />
+          </div>
+
+          <div className='flex items-center gap-2'>
+            <p>Sort by:</p>
+            <Select
+              allowClear
+              tagRender={tagRender}
+              style={{ minWidth: 150 }}
+              value={sortByFieldValue}
+              onChange={(newValue) => {
+                setSortByFieldValue(newValue);
+                const dataBooing = sortByField(
+                  bookingData,
+                  newValue,
+                  sortDirection
+                );
+                setBookingData(dataBooing);
+              }}
+              options={[
+                { value: 'bookingDate', label: 'Booking Date' },
+                { value: 'modifiedDate', label: 'Modified Date' },
+                { value: 'createdDate', label: 'Created Date' }
+              ]}
+            />
+            <Select
+              allowClear
+              tagRender={tagRender}
+              style={{ minWidth: 80 }}
+              value={sortDirection}
+              onChange={(newValue) => setSortDirection(newValue)}
+              options={[
+                { value: 'asc', label: 'ASC' },
+                { value: 'desc', label: 'DESC' }
               ]}
             />
           </div>

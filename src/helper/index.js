@@ -79,10 +79,10 @@ export function convertToUSDateTime(dateTimeString) {
   return dateTime.toLocaleString('en-US', options);
 }
 
-export function sortByModifiedDate(array, sortOrder = 'desc') {
+export function sortByField(array, field, sortOrder = 'desc') {
   return array.sort((a, b) => {
-    const dateA = new Date(a.modifiedDate);
-    const dateB = new Date(b.modifiedDate);
+    const dateA = new Date(a[field]);
+    const dateB = new Date(b[field]);
     let result = dateA - dateB;
 
     if (sortOrder === 'asc') {

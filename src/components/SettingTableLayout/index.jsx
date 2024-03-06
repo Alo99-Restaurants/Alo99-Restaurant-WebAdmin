@@ -59,7 +59,8 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
         extensionData: stringifyData({
           width: table.width,
           height: table.height,
-          position: { x: table.position.x, y: table.position.y }
+          position: { x: table.position.x, y: table.position.y },
+          direction: table.direction
         })
       };
     });
@@ -75,6 +76,25 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
       onSaveLayout(floorId);
     }
   };
+
+  const getSizeTableIcon = (type) => {
+    switch (Number(type)) {
+      case 2:
+        return { width: 132, height: 60 };
+      case 4:
+        return { width: 132, height: 132 };
+      case 6:
+        return { width: 132, height: 150 };
+      case 8:
+        return { width: 132, height: 222 };
+      case 10:
+        return { width: 132, height: 267 };
+      case 12:
+        return { width: 175, height: 267 };
+      default:
+        return { width: 0, height: 0 };
+    }
+  }
 
   return (
     <main className='flex flex-row justify-between'>
@@ -112,10 +132,9 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
                   ...listBox,
                   {
                     id: uuidv4(),
-                    width:
-                      direction === 'horizontal' ? 50 * Number(typeBox) : 100,
-                    height:
-                      direction !== 'horizontal' ? 50 * Number(typeBox) : 100,
+                    direction,
+                    width: getSizeTableIcon(typeBox).width * 1.5,
+                    height: getSizeTableIcon(typeBox).height * 1.5,
                     type: typeBox,
                     position: { x: 0, y: 0 }
                   }

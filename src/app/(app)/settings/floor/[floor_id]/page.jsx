@@ -56,6 +56,7 @@ function FloorDetail(props) {
       width: extensionData.width,
       height: extensionData.height,
       position: extensionData.position,
+      direction: extensionData.direction,
       capacity: table.capacity,
       tableName: table.tableName
     };
