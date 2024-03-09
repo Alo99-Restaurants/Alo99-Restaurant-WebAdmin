@@ -1,14 +1,24 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import useDraggable from '@/hook/useDraggable';
 import Image from 'next/image';
+import { EditOutlined } from '@ant-design/icons';
 
 function TableItem(props) {
   const [active, setActive] = useState(false);
-
   const {
-    item: { id, type, position, height, width, direction = 'horizontal' },
+    item: {
+      id,
+      type,
+      tableName,
+      position,
+      height,
+      width,
+      direction = 'horizontal'
+    },
     handelChangePosition,
+    handelEditItem,
     handelRemoveItem,
+    isEdit,
     isDelete
   } = props;
 
@@ -77,12 +87,14 @@ function TableItem(props) {
           left: '50%',
           transform: 'translate(-50%, -50%)'
         }}>
-        {type}
+        {tableName}
       </div>
       {isDelete && (
         <div
           onClick={() => handelRemoveItem(id)}
-          className='bg-red-500 text-white h-10 w-10 flex items-center justify-center'
+          className={`${
+            direction === 'horizontal' ? '-rotate-90' : ''
+          } bg-red-500 text-white h-10 w-10 flex items-center justify-center`}
           style={{
             position: 'absolute',
             top: '50%',
@@ -90,6 +102,21 @@ function TableItem(props) {
             transform: 'translate(-50%, -50%)'
           }}>
           X
+        </div>
+      )}
+      {isEdit && (
+        <div
+          onClick={() => handelEditItem(id)}
+          className={`${
+            direction === 'horizontal' ? '-rotate-90' : ''
+          } bg-blue-600 text-white h-10 w-10 flex items-center justify-center`}
+          style={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)'
+          }}>
+          <EditOutlined />
         </div>
       )}
     </div>

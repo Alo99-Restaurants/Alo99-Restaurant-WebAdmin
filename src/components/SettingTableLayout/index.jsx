@@ -3,8 +3,8 @@ import TableItem from '@/components/SettingTableLayout/TableItem';
 import { useNotification } from '@/context/NotificationContext';
 import { stringifyData } from '@/helper';
 import { updateFloorTablesService } from '@/services/restaurant.table.service';
-import { Select } from 'antd';
-import { memo, useEffect, useState } from 'react';
+import { Input, Modal, Select } from 'antd';
+import { memo, useEffect, useRef, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
@@ -12,9 +12,71 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
   const [typeBox, setTypeBox] = useState(2);
   const [direction, setDirection] = useState('horizontal');
   const [listBox, setListBox] = useState(floorTables ?? []);
+  const [isDelete, setIsDeleted] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [openModalEdit, setOpenModalEdit] = useState(null);
 
+  const EditModal = () => {
+    const [inputTableName, setInputTableName] = useState();
+    const tableEdit =
+      listBox && !!openModalEdit && listBox.find((_) => _.id === openModalEdit);
+    const tableId = openModalEdit;
+    console.log('inputTableName', inputTableName);
 
-  const ratioMap = 1000/700;
+    const handleUpdateTableName = async () => {
+      const updatedData = listBox.map((item) => {
+        if (item.id === tableId) {
+          return { ...item, tableName: inputTableName };
+        }
+        return item;
+      });
+      console.log('data submit', updatedData);
+      const payloadsTables = updatedData.map((table) => {
+        return {
+          restaurantFloorId: floorId,
+          tableName: table.tableName ?? 'table new',
+          tableType: table.type,
+          capacity: table.capacity ?? table.type,
+          extensionData: stringifyData({
+            width: table.width,
+            height: table.height,
+            position: { x: table.position.x, y: table.position.y },
+            direction: table.direction
+          })
+        };
+      });
+      console.log('payloadsTables', payloadsTables);
+      const payload = {
+        restaurantFloorId: floorId,
+        tables: payloadsTables
+      };
+
+      const res = await updateFloorTablesService(payload);
+      if (res?.data) {
+        addNotification('Update layout successful', 'success');
+        onSaveLayout(floorId);
+      }
+      setOpenModalEdit(null);
+    };
+
+    return (
+      <Modal
+        className={'[&_.ant-btn-primary]:bg-[#1677ff]'}
+        title='Edit table name'
+        open={!!openModalEdit}
+        onOk={handleUpdateTableName}
+        confirmLoading={false}
+        onCancel={() => setOpenModalEdit(null)}>
+        <Input
+          onChange={(e) => setInputTableName(e.target.value)}
+          defaultValue={tableEdit?.tableName}
+          placeholder='table name'
+        />
+      </Modal>
+    );
+  };
+
+  const ratioMap = 1000 / 700;
 
   useEffect(() => {
     setListBox(floorTables);
@@ -42,7 +104,9 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
     setTypeBox(value);
   };
 
-  const [isDelete, setIsDeleted] = useState(false);
+  const handelEditItem = (id) => {
+    setOpenModalEdit(id);
+  };
 
   const buttonClass =
     'text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2';
@@ -94,7 +158,7 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
       default:
         return { width: 0, height: 0 };
     }
-  }
+  };
 
   return (
     <main className='flex flex-row justify-between'>
@@ -147,6 +211,9 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
             <button className={buttonClass} onClick={handleSaveFloorTables}>
               Save
             </button>
+            <button className={buttonClass} onClick={() => setIsEdit(!isEdit)}>
+              Edit name
+            </button>
             <button
               className={buttonDeleteClass}
               onClick={() => setIsDeleted(!isDelete)}>
@@ -163,12 +230,15 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
               key={index}
               item={item}
               isDelete={isDelete}
+              isEdit={isEdit}
+              handelEditItem={handelEditItem}
               handelChangePosition={getPosition}
               handelRemoveItem={removeItem}
             />
           ))}
         </div>
       </div>
+      {openModalEdit && <EditModal />}
     </main>
   );
 };

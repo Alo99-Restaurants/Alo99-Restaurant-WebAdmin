@@ -27,11 +27,11 @@ const menuItems = [
     )
   },
   {
-    key: 'order-management',
+    key: 'booking-management',
     label: (
       <div>
         <FileOutlined />
-        <span>Order Management</span>
+        <span>Booking Management</span>
       </div>
     )
   },
