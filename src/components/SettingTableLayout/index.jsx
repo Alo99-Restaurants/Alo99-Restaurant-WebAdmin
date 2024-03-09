@@ -21,7 +21,6 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
     const tableEdit =
       listBox && !!openModalEdit && listBox.find((_) => _.id === openModalEdit);
     const tableId = openModalEdit;
-    console.log('inputTableName', inputTableName);
 
     const handleUpdateTableName = async () => {
       const updatedData = listBox.map((item) => {
@@ -30,7 +29,6 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
         }
         return item;
       });
-      console.log('data submit', updatedData);
       const payloadsTables = updatedData.map((table) => {
         return {
           restaurantFloorId: floorId,
@@ -45,7 +43,6 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
           })
         };
       });
-      console.log('payloadsTables', payloadsTables);
       const payload = {
         restaurantFloorId: floorId,
         tables: payloadsTables
@@ -53,7 +50,7 @@ const SettingTableLayout = ({ floorId, floorTables, onSaveLayout }) => {
 
       const res = await updateFloorTablesService(payload);
       if (res?.data) {
-        addNotification('Update layout successful', 'success');
+        // addNotification('Update layout successful', 'success');
         onSaveLayout(floorId);
       }
       setOpenModalEdit(null);

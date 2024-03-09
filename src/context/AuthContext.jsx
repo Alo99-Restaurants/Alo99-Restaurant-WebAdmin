@@ -22,10 +22,18 @@ export const AuthProvider = ({ children }) => {
 
   const login = useCallback(
     async (data) => {
-      const response = await loginService(data);
-      const { jwtToken, userInfor } = response.data.data;
-      setUserInfo({ userInfo: userInfor, token: jwtToken });
-      setAccessToken(jwtToken);
+      try {
+        const response = await loginService(data);
+        const { jwtToken, userInfor } = response.data.data;
+        if (userInfor.role === 'Admin') {
+          setUserInfo({ userInfo: userInfor, token: jwtToken });
+          setAccessToken(jwtToken);
+        } else {
+          throw new Error('Username or Password invalid!')
+        }
+      } catch (error) {
+        return error;
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

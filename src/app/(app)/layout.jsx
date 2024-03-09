@@ -3,7 +3,6 @@
 import Header from '@/components/Header';
 import { useAuth } from '@/context/AuthContext';
 import { useNotification } from '@/context/NotificationContext';
-import { JSONParse } from '@/helper';
 import { useLocalStorage } from '@/hook/useLocalStorage';
 import { getRestaurantService } from '@/services/restaurant.service';
 import useStoreBranchesStore from '@/store/storeBranches';

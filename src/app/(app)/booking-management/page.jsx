@@ -1,7 +1,11 @@
 'use client';
 import BookingCard from '@/components/Card/BookingCard';
 import BookingDetailCard from '@/components/Card/BookingDetailCard';
+import DebounceSelect from '@/components/Search/DebounceSelect';
 import { sortByField } from '@/helper';
+import usePagination from '@/hook/usePagination';
+import usePaginationLoadMore from '@/hook/usePaginationLoadMore';
+import { getCustomerService } from '@/services/customner.service';
 import {
   getBookingByIdService,
   getBookingService,
@@ -20,20 +24,49 @@ function OrderManagement() {
       storeBranches: state.storeBranches
     }))
   );
+  // const [totalRows, skipRows, pageIndex, setPageIndex] = usePagination();
+  const [totalRows, pageIndex, setPageIndex] = usePaginationLoadMore(10);
+
   const [bookingData, setBookingData] = useState([]);
   const [bookingQueries, setBookingQueries] = useState({
     RestaurantId: storeBranchActive.id,
-    BookingDate: dayjs().format('YYYY-MM-DD')
+    BookingDate: dayjs().format('YYYY-MM-DD'),
+    TotalRows: 10,
+    SkipRows: 0
   });
   const [sortDirection, setSortDirection] = useState('asc');
   const [sortByFieldValue, setSortByFieldValue] = useState('modifiedDate');
+  const [valueSearch, setValueSearch] = useState('');
   const [bookingIdSelected, setBookingIdSelected] = useState();
   const [bookingActive, setBookingActive] = useState({});
 
   const [isBookingStatusUpdated, setIsBookingStatusUpdated] = useState(false);
+  useEffect(() => {
+    if (valueSearch){
+      setBookingQueries((prev) => {
+        return {
+          ...prev,
+          CustomerId: valueSearch
+        };
+      });
+    } else {
+      setBookingQueries((prev) => {
+        const { CustomerId, ...rest } = prev;
+        return rest;
+      });
+    }
+      
+  }, [valueSearch]);
 
-  // console.log('storeBranchActive', storeBranchActive);
-  // console.log('bookingQueries', bookingQueries);
+  useEffect(() => {
+    setBookingQueries((prev) => {
+      return {
+        ...prev,
+        TotalRows: totalRows,
+        SkipRows: 0
+      };
+    });
+  }, [pageIndex]);
 
   useEffect(() => {
     if (storeBranchActive.id)
@@ -77,7 +110,6 @@ function OrderManagement() {
 
     return () => clearInterval(fetchDataInterval);
   }, [bookingQueries, isBookingStatusUpdated, sortByFieldValue, sortDirection]);
-
 
   useEffect(() => {
     const fetchBookingDetailById = (id) => {
@@ -176,6 +208,23 @@ function OrderManagement() {
     );
   };
 
+  const fetchCustomerList = async (username) => {
+    return getCustomerService({
+      SearchText: username,
+      TotalRows: 50,
+      SkipRows: 0
+    })
+      .then((response) => response?.data?.items)
+      .then((items) => {
+        return items.map((customer) => ({
+          label: `${customer.name} - ${
+            !!customer?.email ? customer.email : 'No email'
+          } - ${!!customer?.phoneNumber ? customer.phoneNumber : 'No phone'}`,
+          value: customer.id
+        }));
+      });
+  };
+
   return (
     <div className='h-full w-full flex-row'>
       <div className='p-2 flex-none h-14'>
@@ -240,6 +289,22 @@ function OrderManagement() {
               ]}
             />
           </div>
+
+          <div className='flex items-center gap-2'>
+            <p>Search:</p>
+            <DebounceSelect
+              showSearch
+              value={valueSearch}
+              placeholder='search customer'
+              fetchOptions={fetchCustomerList}
+              onChange={(newValue) => {
+                setValueSearch(newValue);
+              }}
+              style={{
+                width: 500
+              }}
+            />
+          </div>
         </div>
       </div>
       <div className='booking-panel flex flex-1 h-full pb-14 '>
@@ -254,6 +319,13 @@ function OrderManagement() {
               booking={booking}
             />
           ))}
+          <div className='flex justify-center '>
+            <button
+              className='bg-gray-300 rounded-2xl py-1 px-4 mb-4'
+              onClick={() => setPageIndex(pageIndex + 1)}>
+              load more
+            </button>
+          </div>
         </div>
         <div className='flex-[2] w-full'>
           {bookingData?.length > 0 && bookingActive?.bookingDetail && (

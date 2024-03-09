@@ -5,12 +5,21 @@ import { UserOutlined, LockOutlined } from '@ant-design/icons';
 import Image from 'next/image';
 import Alo99Logo from '../assets/alo99-logo.png';
 import { useAuth } from '@/context/AuthContext';
+import { useNotification } from '@/context/NotificationContext';
+
+
 
 const LoginForm = () => {
   const { login } = useAuth();
+  const { addNotification } = useNotification();
 
-  const onFinish = (values) => {
-    login({ userName: values.userName, password: values.password });
+  const onFinish = async (values) => {
+    const loginErrorResult = await login({
+      userName: values.userName,
+      password: values.password
+    });
+    if (loginErrorResult)
+      addNotification('Username or Password invalid!', 'error');
   };
 
   return (
