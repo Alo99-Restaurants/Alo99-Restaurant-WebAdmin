@@ -24,7 +24,6 @@ function OrderManagement() {
       storeBranches: state.storeBranches
     }))
   );
-  // const [totalRows, skipRows, pageIndex, setPageIndex] = usePagination();
   const [totalRows, pageIndex, setPageIndex] = usePaginationLoadMore(10);
 
   const [bookingData, setBookingData] = useState([]);
@@ -42,7 +41,7 @@ function OrderManagement() {
 
   const [isBookingStatusUpdated, setIsBookingStatusUpdated] = useState(false);
   useEffect(() => {
-    if (valueSearch){
+    if (valueSearch) {
       setBookingQueries((prev) => {
         return {
           ...prev,
@@ -55,7 +54,6 @@ function OrderManagement() {
         return rest;
       });
     }
-      
   }, [valueSearch]);
 
   useEffect(() => {
@@ -308,7 +306,16 @@ function OrderManagement() {
         </div>
       </div>
       <div className='booking-panel flex flex-1 h-full pb-14 '>
-        <div className='flex-[1]  px-4 overflow-y-scroll border-2 mx-2'>
+        <div className='flex-[1] pt-4 overflow-y-scroll border-2 mx-2'>
+          {bookingData && bookingData.length > 0 && (
+            <div className='flex justify-center '>
+              <button
+                className='bg-gray-300 rounded-2xl py-1 px-4'
+                onClick={() => setPageIndex(pageIndex + 1)}>
+                load more ({totalRows} items)
+              </button>
+            </div>
+          )}
           {bookingData.map((booking) => (
             <BookingCard
               key={booking.id}
@@ -319,13 +326,23 @@ function OrderManagement() {
               booking={booking}
             />
           ))}
-          <div className='flex justify-center '>
-            <button
-              className='bg-gray-300 rounded-2xl py-1 px-4 mb-4'
-              onClick={() => setPageIndex(pageIndex + 1)}>
-              load more
-            </button>
-          </div>
+          {bookingData && bookingData.length > 0 && (
+            <div className='flex justify-center '>
+              <button
+                className='bg-gray-300 rounded-2xl py-1 px-4 mb-4'
+                onClick={() => setPageIndex(pageIndex + 1)}>
+                load more ({totalRows} items)
+              </button>
+            </div>
+          )}
+          {!bookingData ||
+            (bookingData?.length === 0 && (
+              <div className='flex justify-center '>
+                <span className='bg-gray-300 text-lg rounded-2xl py-1 px-4 mb-4'>
+                  No data
+                </span>
+              </div>
+            ))}
         </div>
         <div className='flex-[2] w-full'>
           {bookingData?.length > 0 && bookingActive?.bookingDetail && (
