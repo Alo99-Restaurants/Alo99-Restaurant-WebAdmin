@@ -9,7 +9,7 @@ function CheckBooking(props) {
     useEffect(() => {
       if (typeof window !== 'undefined') {
         console.log('open check booking id: ', bookingId);
-        window.location.href = `Alo99Restaurant://check-booking/${bookingId}`;
+        window.location.href = `Alo99Restaurant://reserved/${bookingId}`;
       }
     }, []);
   return (
@@ -17,7 +17,7 @@ function CheckBooking(props) {
       <div>Check Booking {bookingId}....</div>
       <a
         className='text-blue-600'
-        href={`Alo99Restaurant://check-booking/${bookingId}`}>
+        href={`Alo99Restaurant://reserved/${bookingId}`}>
         Open Alo99 Application
       </a>
     </>
