@@ -4,7 +4,8 @@ import { useNotification } from '@/context/NotificationContext';
 import {
   deleteRestaurantFloorByIdService,
   getRestaurantFloorsService,
-  postRestaurantFloorsService
+  postRestaurantFloorsService,
+  updateRestaurantFloorByIdService
 } from '@/services/restaurant.service';
 import useStoreBranchesStore from '@/store/storeBranches';
 import { Button, Collapse, Space } from 'antd';
@@ -13,14 +14,17 @@ import { useEffect, useState } from 'react';
 import FloorForm from '@/components/FloorForm';
 import { Form } from 'antd';
 import Title from 'antd/es/typography/Title';
+import PrimaryModal from '@/components/shared/PrimaryModal';
 
 function FloorPage() {
   const { addNotification } = useNotification();
   const storeBranchActive = useStoreBranchesStore(
     (state) => state.storeBranchActive
   );
+  const [isOpenModal, setIsOpenModal] = useState(false);
   const [form] = Form.useForm();
   const [restaurantFloors, setRestaurantFloors] = useState([]);
+  const [selectedRestaurantFloor, setSelectedRestaurantFloor] = useState(null);
 
   const onFinish = async (values) => {
     const payload = {
@@ -32,6 +36,24 @@ function FloorPage() {
     const response = await postRestaurantFloorsService(payload);
     if (response?.data?.data) {
       addNotification('Create floor successful', 'success');
+      fetchRestaurantFloor();
+    }
+  };
+
+  const handleEditRestaurantFloorClicked = (record) => {
+    form.setFieldsValue(record);
+    setSelectedRestaurantFloor(record);
+    setIsOpenModal(true);
+  };
+
+  const handleEditRestaurantFloor = async (id, values) => {
+    const payload = {
+      ...values,
+      restaurantId: storeBranchActive.id
+    };
+    const response = await updateRestaurantFloorByIdService(id, payload);
+    if (response?.data?.data) {
+      addNotification('Edit floor successful', 'success');
       fetchRestaurantFloor();
     }
   };
@@ -83,7 +105,10 @@ function FloorPage() {
       dataIndex: 'action',
       render: (_, record) => (
         <Space size='middle'>
-          <Button type='primary' className='bg-[#4096ff]'>
+          <Button
+            type='primary'
+            onClick={() => handleEditRestaurantFloorClicked(record)}
+            className='bg-[#4096ff]'>
             Edit
           </Button>
           <Button
@@ -131,6 +156,22 @@ function FloorPage() {
 
   return (
     <div className='p-2 h-full overflow-y-auto '>
+      <PrimaryModal
+        onOk={() =>
+          handleEditRestaurantFloor(
+            selectedRestaurantFloor?.id,
+            form.getFieldsValue()
+          )
+        }
+        isOpen={isOpenModal}
+        onCancel={() => {
+          form.resetFields(); // Clean up form values when modal is closed
+          setIsOpenModal(false);
+        }}
+        title={'Edit Category'}
+        width={1000}>
+        <FloorForm isEdit={true} form={form} onFinish={onFinish} />
+      </PrimaryModal>
       <Collapse items={items} defaultActiveKey={['2']} />
     </div>
   );

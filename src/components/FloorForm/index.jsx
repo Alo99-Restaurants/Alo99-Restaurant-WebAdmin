@@ -1,7 +1,7 @@
 'use client';
 import { Button, Form, Input, InputNumber, Space } from 'antd';
 
-function FloorForm({ form, onFinish }) {
+function FloorForm({ form, onFinish, isEdit = false }) {
   return (
     <Form
       layout='horizontal'
@@ -23,11 +23,14 @@ function FloorForm({ form, onFinish }) {
       <Form.Item label='Capacity' name='capacity'>
         <InputNumber min={1} max={99} />
       </Form.Item>
-      <Form.Item className='flex justify-center'>
-        <Button type='primary' htmlType='submit'>
-          Add New Floor
-        </Button>
-      </Form.Item>
+
+      {!isEdit && (
+        <Form.Item className='flex justify-center'>
+          <Button type='primary' htmlType='submit'>
+            Add New Floor
+          </Button>
+        </Form.Item>
+      )}
     </Form>
   );
 }
