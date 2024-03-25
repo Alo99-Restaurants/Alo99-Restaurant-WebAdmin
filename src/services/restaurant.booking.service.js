@@ -42,3 +42,17 @@ export async function getBookingMenuService(payload) {
     throw error.message;
   }
 }
+
+export async function getBookingStatistics(targetDate) {
+  try {
+    if(!targetDate) targetDate = new Date();
+    const queryString = buildQueryString(targetDate);
+    const response = await baseAPI.get(
+      `/api/Booking/statistics?TargetDate=${queryString}`
+    );
+    return response;
+  } catch (error) {
+    console.error('Get Booking Statistics Service Error', error);
+    throw error.message;
+  }
+}
