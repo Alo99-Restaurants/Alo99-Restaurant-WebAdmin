@@ -42,7 +42,6 @@ export const AuthProvider = ({ children }) => {
   const logout = useCallback(() => {
     setUserInfo(JSON.stringify(''));
     setAccessToken('');
-    setRefreshToken('');
   }, []);
 
   const value = useMemo(

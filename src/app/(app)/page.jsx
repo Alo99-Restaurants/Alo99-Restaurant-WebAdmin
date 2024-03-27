@@ -1,7 +1,13 @@
-import React from 'react';
+'use client';
+import React, { useLayoutEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 function App() {
-  return <div>App</div>;
+  const router = useRouter();
+  useLayoutEffect(() => {
+    router.replace('/dashboard');
+  }, []);
+  return <>Loading...</>;
 }
 
 export default App;

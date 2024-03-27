@@ -33,8 +33,8 @@ const LoginForm = () => {
           className='login-form'
           initialValues={{
             remember: true,
-            userName: 'admin',
-            password: 'admin'
+            userName: '',
+            password: ''
           }}
           onFinish={onFinish}>
           <Form.Item

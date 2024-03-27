@@ -4,7 +4,8 @@ import {
   FileOutlined,
   HomeOutlined,
   SettingOutlined,
-  UserOutlined
+  UserOutlined,
+  LogoutOutlined
 } from '@ant-design/icons';
 import { Avatar, Layout, Menu, Select } from 'antd';
 import Image from 'next/image';
@@ -14,6 +15,7 @@ import Alo99Logo from '../../assets/alo99-logo.png';
 import useStoreBranchesStore from '@/store/storeBranches';
 import { useLocalStorage } from '@/hook/useLocalStorage';
 import { useShallow } from 'zustand/react/shallow';
+import { useAuth } from '@/context/AuthContext';
 
 const { Header: HeaderLib } = Layout;
 const menuItems = [
@@ -48,6 +50,7 @@ const menuItems = [
 
 function Header() {
   const router = useRouter();
+  const { logout } = useAuth();
   const pathname = usePathname();
   const { storeBranches, storeBranchActive, setStoreBranchActive } =
     useStoreBranchesStore(
@@ -85,6 +88,10 @@ function Header() {
 
   const defaultValueBranchActive = storeBranchActive.id;
 
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <HeaderLib className='flex items-center bg-white shadow'>
       <div className='w-[100px] flex justify-center items-center'>
@@ -110,8 +117,11 @@ function Header() {
         )}
       </div>
 
-      <div className='pl-4'>
+      <div className='pl-4 flex gap-4'>
         <Avatar size={40} icon={<UserOutlined />} />
+        <div onClick={handleLogout} className='flex'>
+          <LogoutOutlined className='text-[20px]' />
+        </div>
       </div>
     </HeaderLib>
   );
