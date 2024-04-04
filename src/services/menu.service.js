@@ -2,7 +2,7 @@ import baseAPI from './axios/api';
 
 export async function getRestaurantMenu() {
   try {
-    const response = await baseAPI.get('/api/RestaurantMenu');
+    const response = await baseAPI.get('/api/RestaurantMenu?TotalRows=100');
     return response;
   } catch (error) {
     console.error('Get RestaurantMenu Service Error', error);
